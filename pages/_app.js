@@ -84,7 +84,7 @@ function MyApp({ Component, pageProps }) {
     <ThemeProvider>
       <SSRProvider>
         <Provider store={store}>
-          Main development
+          Main development prod
           <NextNprogress
             color="#3668E9"
             startPosition={0.3}
