@@ -40,8 +40,8 @@ function MyApp({ Component, pageProps }) {
       const docStyle = document.documentElement.style;
       window.innerWidth < 425
         ? (docStyle.fontSize = `${((window.innerWidth * 0.1122) / 3).toFixed(
-            1
-          )}px`)
+          1
+        )}px`)
         : (docStyle.fontSize = "16px");
     };
     setSize();
@@ -80,6 +80,7 @@ function MyApp({ Component, pageProps }) {
     <ThemeProvider>
       <SSRProvider>
         <Provider store={store}>
+          Main development
           <NextNprogress
             color="#246c66"
             startPosition={0.3}
