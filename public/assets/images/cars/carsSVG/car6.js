@@ -9,13 +9,13 @@ const Car6 = () => {
         <style
           dangerouslySetInnerHTML={{
             __html:
-              ".cls-1{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-3{fill:#1ac200;}.cls-4{clip-path:url(#clip-path-3);}.cls-5{fill:url(#linear-gradient);}.cls-6{clip-path:url(#clip-path-4);}.cls-7{fill:url(#linear-gradient-2);}.cls-8{clip-path:url(#clip-path-5);}.cls-9{fill:url(#linear-gradient-3);}.cls-10{clip-path:url(#clip-path-6);}.cls-11{fill:url(#linear-gradient-4);}.cls-12{clip-path:url(#clip-path-7);}.cls-13{fill:url(#linear-gradient-5);}.cls-14{clip-path:url(#clip-path-8);}.cls-15{fill:url(#linear-gradient-6);}.cls-16{clip-path:url(#clip-path-9);}.cls-17{fill:url(#linear-gradient-7);}.cls-18{clip-path:url(#clip-path-10);}.cls-19{fill:url(#linear-gradient-8);}.cls-20{clip-path:url(#clip-path-11);}.cls-21{fill:url(#linear-gradient-9);}.cls-22{clip-path:url(#clip-path-12);}.cls-23{fill:url(#linear-gradient-10);}.cls-24{clip-path:url(#clip-path-13);}.cls-25{fill:url(#radial-gradient);}.cls-26{clip-path:url(#clip-path-14);}.cls-27{fill:url(#radial-gradient-2);}.cls-28{fill:#70d907;}.cls-29{clip-path:url(#clip-path-16);}.cls-30{clip-path:url(#clip-path-17);}.cls-31{fill:url(#linear-gradient-11);}.cls-32{opacity:0.21;}.cls-33{clip-path:url(#clip-path-18);}.cls-34{fill:#fff;}.cls-35{clip-path:url(#clip-path-19);}.cls-36{fill:#1e1d18;}.cls-37{clip-path:url(#clip-path-20);}.cls-38{clip-path:url(#clip-path-21);}.cls-39{fill:url(#linear-gradient-12);}.cls-40{clip-path:url(#clip-path-22);}.cls-41{fill:url(#radial-gradient-3);}.cls-42{clip-path:url(#clip-path-23);}.cls-43{fill:url(#linear-gradient-13);}.cls-44{clip-path:url(#clip-path-24);}.cls-45{fill:url(#linear-gradient-14);}.cls-46{clip-path:url(#clip-path-25);}.cls-47{fill:url(#radial-gradient-4);}.cls-48{clip-path:url(#clip-path-26);}.cls-49{fill:url(#linear-gradient-15);}.cls-50{fill:#2b2a21;}.cls-51{clip-path:url(#clip-path-28);}.cls-52{fill:url(#linear-gradient-16);}.cls-53{clip-path:url(#clip-path-30);}.cls-54{clip-path:url(#clip-path-31);}.cls-55{fill:url(#linear-gradient-17);}.cls-56{clip-path:url(#clip-path-32);}.cls-57{opacity:0.19;fill:url(#linear-gradient-18);}",
+              ".cls-1{fill:none;}.cls-2{clipPath:url(#clipPath);}.cls-3{fill:#1ac200;}.cls-4{clipPath:url(#clipPath-3);}.cls-5{fill:url(#linear-gradient);}.cls-6{clipPath:url(#clipPath-4);}.cls-7{fill:url(#linear-gradient-2);}.cls-8{clipPath:url(#clipPath-5);}.cls-9{fill:url(#linear-gradient-3);}.cls-10{clipPath:url(#clipPath-6);}.cls-11{fill:url(#linear-gradient-4);}.cls-12{clipPath:url(#clipPath-7);}.cls-13{fill:url(#linear-gradient-5);}.cls-14{clipPath:url(#clipPath-8);}.cls-15{fill:url(#linear-gradient-6);}.cls-16{clipPath:url(#clipPath-9);}.cls-17{fill:url(#linear-gradient-7);}.cls-18{clipPath:url(#clipPath-10);}.cls-19{fill:url(#linear-gradient-8);}.cls-20{clipPath:url(#clipPath-11);}.cls-21{fill:url(#linear-gradient-9);}.cls-22{clipPath:url(#clipPath-12);}.cls-23{fill:url(#linear-gradient-10);}.cls-24{clipPath:url(#clipPath-13);}.cls-25{fill:url(#radial-gradient);}.cls-26{clipPath:url(#clipPath-14);}.cls-27{fill:url(#radial-gradient-2);}.cls-28{fill:#70d907;}.cls-29{clipPath:url(#clipPath-16);}.cls-30{clipPath:url(#clipPath-17);}.cls-31{fill:url(#linear-gradient-11);}.cls-32{opacity:0.21;}.cls-33{clipPath:url(#clipPath-18);}.cls-34{fill:#fff;}.cls-35{clipPath:url(#clipPath-19);}.cls-36{fill:#1e1d18;}.cls-37{clipPath:url(#clipPath-20);}.cls-38{clipPath:url(#clipPath-21);}.cls-39{fill:url(#linear-gradient-12);}.cls-40{clipPath:url(#clipPath-22);}.cls-41{fill:url(#radial-gradient-3);}.cls-42{clipPath:url(#clipPath-23);}.cls-43{fill:url(#linear-gradient-13);}.cls-44{clipPath:url(#clipPath-24);}.cls-45{fill:url(#linear-gradient-14);}.cls-46{clipPath:url(#clipPath-25);}.cls-47{fill:url(#radial-gradient-4);}.cls-48{clipPath:url(#clipPath-26);}.cls-49{fill:url(#linear-gradient-15);}.cls-50{fill:#2b2a21;}.cls-51{clipPath:url(#clipPath-28);}.cls-52{fill:url(#linear-gradient-16);}.cls-53{clipPath:url(#clipPath-30);}.cls-54{clipPath:url(#clipPath-31);}.cls-55{fill:url(#linear-gradient-17);}.cls-56{clipPath:url(#clipPath-32);}.cls-57{opacity:0.19;fill:url(#linear-gradient-18);}",
           }}
         />
-        <clipPath id="clip-path" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath" transform="translate(11.77 9.9)">
           <rect className="cls-1" width="17.62" height={36} />
         </clipPath>
-        <clipPath id="clip-path-3" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-3" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M8.74,0A12.14,12.14,0,0,0,5.1.52V2h7.43V.52A12.14,12.14,0,0,0,8.89,0Z"
@@ -33,7 +33,7 @@ const Car6 = () => {
           <stop offset={0} stopColor="#261e2a" />
           <stop offset={1} stopColor="#0d0c0d" />
         </linearGradient>
-        <clipPath id="clip-path-4" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-4" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M5.86,14.63a9.64,9.64,0,0,0-2.48.7l.09.58A8.54,8.54,0,0,1,6,15.15a25.41,25.41,0,0,1,5.65,0,8.54,8.54,0,0,1,2.52.76l.1-.58a9.82,9.82,0,0,0-2.49-.7,24.19,24.19,0,0,0-2.95-.15,24.45,24.45,0,0,0-3,.15"
@@ -51,7 +51,7 @@ const Car6 = () => {
           <stop offset={0} stopColor="#040506" />
           <stop offset={1} stopColor="#161616" />
         </linearGradient>
-        <clipPath id="clip-path-5" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-5" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M5.65,8.77A13,13,0,0,0,3,9.66c-.26.12-.4.21-.45.31a1.35,1.35,0,0,0,0,.53v0A1.29,1.29,0,0,1,3,10.26a13,13,0,0,1,2.66-.89,15.69,15.69,0,0,1,6.33,0,13,13,0,0,1,2.66.89,1.29,1.29,0,0,1,.42.26v0a1.18,1.18,0,0,0,0-.53c0-.1-.19-.19-.45-.31A13,13,0,0,0,12,8.77a14.61,14.61,0,0,0-3.16-.32,14.7,14.7,0,0,0-3.17.32"
@@ -66,7 +66,7 @@ const Car6 = () => {
           gradientTransform="matrix(14.08, 0, 0, -2.3, 13386.52, 734.34)"
           xlinkHref="#linear-gradient-2"
         />
-        <clipPath id="clip-path-6" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-6" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M5.65,9.37A13,13,0,0,0,3,10.26a1.29,1.29,0,0,0-.42.26l.81,4.81a9.64,9.64,0,0,1,2.48-.7,29.18,29.18,0,0,1,5.91,0,9.82,9.82,0,0,1,2.49.7l.8-4.81a1.29,1.29,0,0,0-.42-.26A13,13,0,0,0,12,9.37a14.61,14.61,0,0,0-3.16-.32,14.7,14.7,0,0,0-3.17.32"
@@ -84,7 +84,7 @@ const Car6 = () => {
           <stop offset={0} stopColor="#131015" />
           <stop offset={1} stopColor="#161616" />
         </linearGradient>
-        <clipPath id="clip-path-7" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-7" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M6.35,32.66a10.83,10.83,0,0,1-2.41-.8A15.77,15.77,0,0,1,4,28.57a17.9,17.9,0,0,0,4.78.6,17.15,17.15,0,0,0,4.78-.57,16.16,16.16,0,0,1,.09,3.26,10.83,10.83,0,0,1-2.41.8,14.58,14.58,0,0,1-2.47.16,14.53,14.53,0,0,1-2.46-.16M13.5,28a12.44,12.44,0,0,1-4.68.73A13.81,13.81,0,0,1,4.14,28l-.22-.09c0,.2-.1.41-.14.61a15.13,15.13,0,0,0-.2,3.86,11.74,11.74,0,0,0,2.59.79,20.44,20.44,0,0,0,5.3,0,11.74,11.74,0,0,0,2.59-.79,15,15,0,0,0-.2-3.84c0-.21-.09-.42-.14-.63l-.22.1"
@@ -99,7 +99,7 @@ const Car6 = () => {
           gradientTransform="matrix(12.06, 0, 0, -6.1, 11323.93, 2816.68)"
           xlinkHref="#linear-gradient-2"
         />
-        <clipPath id="clip-path-8" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-8" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M3.94,31.86a10.8,10.8,0,0,0,2.41.79,17.7,17.7,0,0,0,4.93,0,10.8,10.8,0,0,0,2.41-.79,16.14,16.14,0,0,0-.09-3.26,17.53,17.53,0,0,1-4.78.57A18.37,18.37,0,0,1,4,28.57a16.44,16.44,0,0,0-.1,3.29"
@@ -114,7 +114,7 @@ const Car6 = () => {
           gradientTransform="matrix(11.15, 0, 0, -4.78, 10386.11, 2104.63)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-9" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-9" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M2.13,14c.05,1.37.21,3.25.21,4.47s0,1.94-.08,2.34l1.06.37-.18-5-1-5.9S2,11.86,2.13,14"
@@ -129,7 +129,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.42, 0, 0, -12.07, 444.34, 6040.13)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-10" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-10" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M14.49,16.24l-.18,5,1.06-.37c0-.39-.07-1.19-.08-2.34s.16-3.1.21-4.47c.09-2.16,0-3.68,0-3.68Z"
@@ -144,7 +144,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.42, 0, 0, -12.07, 458.99, 6040.13)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-11" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-11" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M2.23,28.54a5.46,5.46,0,0,0,.71-1.24,5.51,5.51,0,0,0,.51-1.37l-.12-4.15-1.1-.48c-.12,1.55,0,7.25,0,7.25"
@@ -159,7 +159,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.49, 0, 0, -8.05, 513.91, 3871.5)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-12" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-12" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M14.3,21.78l-.12,4.16a5.59,5.59,0,0,0,.51,1.36,5.75,5.75,0,0,0,.71,1.25s.12-5.7,0-7.25Z"
@@ -174,7 +174,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.49, 0, 0, -8.05, 527.33, 3871.5)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-13" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-13" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M3.55,1.31A10,10,0,0,0,2.07,2.5a.72.72,0,0,0,.62-.14L4.5,1.21a.92.92,0,0,0,.34-.6,4.36,4.36,0,0,0-1.29.7"
@@ -191,7 +191,7 @@ const Car6 = () => {
           <stop offset={0} stopColor="#fff" />
           <stop offset={1} stopColor="#937197" />
         </radialGradient>
-        <clipPath id="clip-path-14" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-14" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M13.13,1.21l1.81,1.15a.73.73,0,0,0,.62.14c-.36-.48-.84-.64-1.48-1.19a4.36,4.36,0,0,0-1.29-.7.92.92,0,0,0,.34.6"
@@ -205,7 +205,7 @@ const Car6 = () => {
           gradientTransform="translate(-278.74 -905.09) scale(0.7 0.77)"
           xlinkHref="#radial-gradient"
         />
-        <clipPath id="clip-path-16" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-16" transform="translate(11.77 9.9)">
           <rect
             className="cls-1"
             x="6.93"
@@ -214,7 +214,7 @@ const Car6 = () => {
             height="6.19"
           />
         </clipPath>
-        <clipPath id="clip-path-17" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-17" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M14.64,10.26A13,13,0,0,0,12,9.37a12.49,12.49,0,0,0-1.49-.24,36.5,36.5,0,0,0-3.56,5.4,29,29,0,0,1,4.84.1,9.8,9.8,0,0,1,2.49.69l.8-4.8a1.29,1.29,0,0,0-.42-.26"
@@ -232,7 +232,7 @@ const Car6 = () => {
           <stop offset={0} stopColor="#131015" />
           <stop offset={1} stopColor="#040506" />
         </linearGradient>
-        <clipPath id="clip-path-18" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-18" transform="translate(11.77 9.9)">
           <rect
             className="cls-1"
             x="2.7"
@@ -241,10 +241,10 @@ const Car6 = () => {
             height="2.19"
           />
         </clipPath>
-        <clipPath id="clip-path-19" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-19" transform="translate(11.77 9.9)">
           <rect className="cls-1" x="1.69" y="1.52" width="2.8" height="7.96" />
         </clipPath>
-        <clipPath id="clip-path-20" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-20" transform="translate(11.77 9.9)">
           <rect
             className="cls-1"
             x="13.15"
@@ -253,7 +253,7 @@ const Car6 = () => {
             height="7.96"
           />
         </clipPath>
-        <clipPath id="clip-path-21" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-21" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M15.46,12.34c0,.69.63-.41.62-.95s-.62-.67-.62-.67a11,11,0,0,0,0,1.62"
@@ -268,7 +268,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.86, 0, 0, -2.63, 1253.57, 496.93)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-22" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-22" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M15.86,11.66l1.75.55a.39.39,0,0,0,0-.3,5.73,5.73,0,0,0-1.35-.58l-.1,0c-.17,0-.23.18-.25.35"
@@ -285,7 +285,7 @@ const Car6 = () => {
           <stop offset={0} stopColor="#44a571" />
           <stop offset={1} stopColor="#2c9e05" />
         </radialGradient>
-        <clipPath id="clip-path-23" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-23" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M15.85,11.89l1.72.45a.56.56,0,0,0,0-.12l-1.75-.56a1.77,1.77,0,0,0,0,.23"
@@ -300,7 +300,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.96, 0, 0, -0.76, 1013.65, -103.12)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-24" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-24" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M1.5,11.35c0,.54.65,1.65.66,1a11,11,0,0,0,0-1.62s-.64.12-.66.67"
@@ -315,7 +315,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.81, 0, 0, -2.68, 1139.89, 553.52)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-25" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-25" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M1.41,11.29a6.18,6.18,0,0,0-1.35.58.36.36,0,0,0-.06.2.59.59,0,0,0,0,.13l1.75-.56c0-.16-.09-.37-.26-.37l-.1,0"
@@ -329,7 +329,7 @@ const Car6 = () => {
           gradientTransform="translate(-471.42 -678.73) scale(0.53)"
           xlinkHref="#radial-gradient-3"
         />
-        <clipPath id="clip-path-26" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-26" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M0,12.2a.42.42,0,0,0,0,.1l1.72-.45c0-.07,0-.14,0-.21Z"
@@ -344,7 +344,7 @@ const Car6 = () => {
           gradientTransform="matrix(1.96, 0, 0, -0.73, 987.89, -116.17)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-28" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-28" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M6.72,35.73a.43.43,0,0,0-.3.16c.92.09,1.72.11,2.12.11h.55c.4,0,1.2,0,2.11-.11a.39.39,0,0,0-.29-.16Z"
@@ -359,7 +359,7 @@ const Car6 = () => {
           gradientTransform="matrix(5.31, 0, 0, -0.29, 4423.09, -326.82)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-30" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-30" transform="translate(11.77 9.9)">
           <rect
             className="cls-1"
             x="5.05"
@@ -368,7 +368,7 @@ const Car6 = () => {
             height="4.22"
           />
         </clipPath>
-        <clipPath id="clip-path-31" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-31" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M13.59,28.6a17.15,17.15,0,0,1-4.78.57c-.49,0-.94,0-1.38,0-1.36.64-2.19,2.66-2.38,3.18.42.14.86.25,1.3.35a18.42,18.42,0,0,0,4.92,0,10.66,10.66,0,0,0,2.41-.8,16.16,16.16,0,0,0-.09-3.26"
@@ -383,7 +383,7 @@ const Car6 = () => {
           gradientTransform="matrix(10.77, 0, 0, -9.31, 10446.52, 4080.9)"
           xlinkHref="#linear-gradient-11"
         />
-        <clipPath id="clip-path-32" transform="translate(11.77 9.9)">
+        <clipPath id="clipPath-32" transform="translate(11.77 9.9)">
           <path
             className="cls-1"
             d="M18,12.27h0a.54.54,0,0,1-.05.11l-.79-.2c0,2.47-.09,4.69-.09,5.73a.16.16,0,0,1,.15.15v1.41a.16.16,0,0,1-.14.15c0,2,0,3.73,0,5.3a.16.16,0,0,1,.09.14v1.4a.18.18,0,0,1-.15.16,36.91,36.91,0,0,1-.76,7.42,1.84,1.84,0,0,1-.9,1,8.4,8.4,0,0,1-2.81.81l-.93.11a.39.39,0,0,0-.3-.17H7.06a.4.4,0,0,0-.3.17c-.4,0-.83-.09-1.25-.17h0a7.2,7.2,0,0,1-2.64-.86,1.62,1.62,0,0,1-.73-.88,35.9,35.9,0,0,1-.77-7.42.17.17,0,0,1-.14-.16v-1.4a.14.14,0,0,1,.09-.14c0-1.57-.06-3.34-.05-5.3a.16.16,0,0,1-.12-.15V18.07a.15.15,0,0,1,.14-.15c0-1-.08-3.29-.09-5.78l-.8.22a.69.69,0,0,1,0-.1.68.68,0,0,1,0-.14.33.33,0,0,1,.06-.19,5.86,5.86,0,0,1,.8-.38,54.55,54.55,0,0,1,.25-5.9,5.75,5.75,0,0,1,1-3.09h0A9.93,9.93,0,0,1,3.89,1.37,4,4,0,0,1,5.18.67,1.14,1.14,0,0,1,5.44.58,12.48,12.48,0,0,1,9.08.05h.24a12.21,12.21,0,0,1,3.55.53,1.34,1.34,0,0,1,.26.09,4,4,0,0,1,1.29.7c.64.55,1.12.71,1.48,1.19a5.92,5.92,0,0,1,1,3.09,58,58,0,0,1,.25,5.93,5.79,5.79,0,0,1,.79.39A.3.3,0,0,1,18,12.27Z"

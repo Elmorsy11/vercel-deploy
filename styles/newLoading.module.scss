@@ -1,0 +1,114 @@
+@keyframes animate {
+  100% {
+    transform: translateY(2px);
+  }
+}
+@keyframes wheels {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes path {
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  .body {
+    width: 150px;
+    height: 80px;
+    background-color:  black;
+    border-radius: 5px;
+    position: relative;
+    animation: animate 0.5s linear infinite;
+    &::before {
+      position: absolute;
+      content: "";
+      width: 60px;
+      height: 30px;
+      background-color: #ffffff;
+      top: -10px;
+      right: -20px;
+      transform: rotate(40deg);
+      border-radius: 0 0 0 50px;
+    }
+    .wheel {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #1e8178;
+      position: absolute;
+      border-radius: 50px;
+      margin-left: 50px;
+      bottom: -20px;
+      animation: wheels 0.6s linear infinite;
+      &::before {
+        position: absolute;
+        content: "";
+        background-color: #1e8178;
+        width: 100%;
+        height: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      &::after {
+        position: absolute;
+        content: "";
+        background-color: #1e8178;
+        width: 100%;
+        height: 5px;
+        top: 50%;
+        transform: translateY(-50%) rotate(90deg);
+      }
+    }
+    .front {
+      position: absolute;
+      margin: 0 80px;
+    }
+    .back {
+      position: absolute;
+      margin: 0 10px;
+    }
+  }
+  .cover {
+    position: relative;
+    width: 200px;
+    height: 10px;
+    bottom: -15px;
+    overflow: hidden;
+    .path {
+      width: 600%;
+      height: 8px;
+      background-color: #000;
+      position: absolute;
+      animation: path 1.5s linear infinite;
+      &::before {
+        position: absolute;
+        content: "";
+        width: 18px;
+        height: 8px;
+        background-color: #fff;
+        left: 20%;
+      }
+      &::after {
+        position: absolute;
+        content: "";
+        width: 18px;
+        height: 8px;
+        background-color: #fff;
+        right: 60%;
+      }
+    }
+  }
+  .text {
+    position: absolute;
+    text-align: center;
+    bottom: 10px;
+    font-weight: 800;
+    font-size: 20px;
+  }
+}

@@ -6,16 +6,6 @@ $colorGray: #dedee2;
 $color__patty: #151824;
 $color__secondary: #575b67;
 
-[dir="rtl"] .DropdownChild {
-  right: auto;
-  left: 0px;
-}
-
-[dir="rtl"] .hamburger {
-  right: auto;
-  left: 29px;
-}
-
 .DropdownChild {
   min-height: 70vh;
   width: 280px;

@@ -11,7 +11,6 @@ export default NextAuth({
       },
     }),
   ],
-
   callbacks: {
     redirect: async (url, baseUrl) => {
       return baseUrl;

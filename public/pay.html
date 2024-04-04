@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Hello</h1>
+  <div id="root"></div>
+  <form action="http://localhost:3000/test" class="paymentWidgets" data-brands="VISA MASTER MADA"></form>
+<!-- \
+
+https://wordpresshyperpay.docs.oppwa.com/tutorials/integration-guide?
+id=F7DD55D4A6D5922BCD4A018403B86036.uat01-vm-tx01
+resourcePath=/v1/checkouts/F7DD55D4A6D5922BCD4A018403B86036.uat01-vm-tx01/payment&id=80F02E87B95D9D22BDF4350369EB5B7D.uat01-vm-tx01&resourcePath=
+/v1/checkouts/80F02E87B95D9D22BDF4350369EB5B7D.uat01-vm-tx01/payment
+-->
+  <script>
+    let id = window.location.search.slice(4)
+    const script = document.createElement('script')
+    script.src = `https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${id}`
+
+    var wpwlOptions = {style:"card"}
+    document.getElementById('root').append(script)
+
+  </script>
+
+</body>
+</html>

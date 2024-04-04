@@ -1,0 +1,19 @@
+{
+    "Name": "الاسم",
+    "Phone Number": "رقم التليفون",
+    "Email": "الايميل",
+    "User Role": "دور المستخدم",
+    "Export": "تنزيل",
+    "ID": "رقم",
+    "vehicles_key": "مركبات",
+    "serial number": "الرقم السري",
+    "Price": "لسعر",
+    "Start Date": "تاريخ البدء",
+    "End Date": "تاريخ الانتهاء",
+    "Details": "التفاصيل",
+    "Status": "الحاله",
+    "users_key": "المستخدمون",
+    "Add_Vehicle": "إضافة مركبة",
+    "Add_User": "إضافة مستخدم",
+    "upload_image_key" : "تحميل صورة"
+}

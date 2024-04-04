@@ -9,13 +9,13 @@ const Car5 = () => {
         <style
           dangerouslySetInnerHTML={{
             __html:
-              ".cls-1{fill:none;}.cls-2{clip-path:url(#clip-path);}.cls-3{fill:#f28100;}.cls-4{clip-path:url(#clip-path-3);}.cls-5{fill:url(#linear-gradient);}.cls-6{clip-path:url(#clip-path-4);}.cls-7{fill:url(#linear-gradient-2);}.cls-8{clip-path:url(#clip-path-5);}.cls-9{fill:url(#linear-gradient-3);}.cls-10{clip-path:url(#clip-path-6);}.cls-11{fill:url(#linear-gradient-4);}.cls-12{clip-path:url(#clip-path-7);}.cls-13{fill:url(#linear-gradient-5);}.cls-14{clip-path:url(#clip-path-8);}.cls-15{fill:url(#linear-gradient-6);}.cls-16{clip-path:url(#clip-path-9);}.cls-17{fill:url(#linear-gradient-7);}.cls-18{clip-path:url(#clip-path-10);}.cls-19{fill:url(#linear-gradient-8);}.cls-20{clip-path:url(#clip-path-11);}.cls-21{fill:url(#linear-gradient-9);}.cls-22{clip-path:url(#clip-path-12);}.cls-23{fill:url(#linear-gradient-10);}.cls-24{clip-path:url(#clip-path-13);}.cls-25{fill:url(#radial-gradient);}.cls-26{clip-path:url(#clip-path-14);}.cls-27{fill:url(#radial-gradient-2);}.cls-28{fill:#c29200;}.cls-29{clip-path:url(#clip-path-16);}.cls-30{clip-path:url(#clip-path-17);}.cls-31{fill:url(#linear-gradient-11);}.cls-32{opacity:0.21;}.cls-33{clip-path:url(#clip-path-18);}.cls-34{fill:#fff;}.cls-35{clip-path:url(#clip-path-19);}.cls-36{fill:#513b1f;}.cls-37{clip-path:url(#clip-path-20);}.cls-38{clip-path:url(#clip-path-21);}.cls-39{fill:url(#linear-gradient-12);}.cls-40{clip-path:url(#clip-path-22);}.cls-41{fill:url(#radial-gradient-3);}.cls-42{clip-path:url(#clip-path-23);}.cls-43{fill:url(#linear-gradient-13);}.cls-44{clip-path:url(#clip-path-24);}.cls-45{fill:url(#linear-gradient-14);}.cls-46{clip-path:url(#clip-path-25);}.cls-47{fill:url(#radial-gradient-4);}.cls-48{clip-path:url(#clip-path-26);}.cls-49{fill:url(#linear-gradient-15);}.cls-50{fill:#613f24;}.cls-51{clip-path:url(#clip-path-28);}.cls-52{fill:url(#linear-gradient-16);}.cls-53{clip-path:url(#clip-path-30);}.cls-54{clip-path:url(#clip-path-31);}.cls-55{fill:url(#linear-gradient-17);}.cls-56{clip-path:url(#clip-path-32);}.cls-57{opacity:0.19;fill:url(#linear-gradient-18);}",
+              ".cls-1{fill:none;}.cls-2{clipPath:url(#clipPath);}.cls-3{fill:#f28100;}.cls-4{clipPath:url(#clipPath-3);}.cls-5{fill:url(#linear-gradient);}.cls-6{clipPath:url(#clipPath-4);}.cls-7{fill:url(#linear-gradient-2);}.cls-8{clipPath:url(#clipPath-5);}.cls-9{fill:url(#linear-gradient-3);}.cls-10{clipPath:url(#clipPath-6);}.cls-11{fill:url(#linear-gradient-4);}.cls-12{clipPath:url(#clipPath-7);}.cls-13{fill:url(#linear-gradient-5);}.cls-14{clipPath:url(#clipPath-8);}.cls-15{fill:url(#linear-gradient-6);}.cls-16{clipPath:url(#clipPath-9);}.cls-17{fill:url(#linear-gradient-7);}.cls-18{clipPath:url(#clipPath-10);}.cls-19{fill:url(#linear-gradient-8);}.cls-20{clipPath:url(#clipPath-11);}.cls-21{fill:url(#linear-gradient-9);}.cls-22{clipPath:url(#clipPath-12);}.cls-23{fill:url(#linear-gradient-10);}.cls-24{clipPath:url(#clipPath-13);}.cls-25{fill:url(#radial-gradient);}.cls-26{clipPath:url(#clipPath-14);}.cls-27{fill:url(#radial-gradient-2);}.cls-28{fill:#c29200;}.cls-29{clipPath:url(#clipPath-16);}.cls-30{clipPath:url(#clipPath-17);}.cls-31{fill:url(#linear-gradient-11);}.cls-32{opacity:0.21;}.cls-33{clipPath:url(#clipPath-18);}.cls-34{fill:#fff;}.cls-35{clipPath:url(#clipPath-19);}.cls-36{fill:#513b1f;}.cls-37{clipPath:url(#clipPath-20);}.cls-38{clipPath:url(#clipPath-21);}.cls-39{fill:url(#linear-gradient-12);}.cls-40{clipPath:url(#clipPath-22);}.cls-41{fill:url(#radial-gradient-3);}.cls-42{clipPath:url(#clipPath-23);}.cls-43{fill:url(#linear-gradient-13);}.cls-44{clipPath:url(#clipPath-24);}.cls-45{fill:url(#linear-gradient-14);}.cls-46{clipPath:url(#clipPath-25);}.cls-47{fill:url(#radial-gradient-4);}.cls-48{clipPath:url(#clipPath-26);}.cls-49{fill:url(#linear-gradient-15);}.cls-50{fill:#613f24;}.cls-51{clipPath:url(#clipPath-28);}.cls-52{fill:url(#linear-gradient-16);}.cls-53{clipPath:url(#clipPath-30);}.cls-54{clipPath:url(#clipPath-31);}.cls-55{fill:url(#linear-gradient-17);}.cls-56{clipPath:url(#clipPath-32);}.cls-57{opacity:0.19;fill:url(#linear-gradient-18);}",
           }}
         />
-        <clipPath id="clip-path" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath" transform="translate(11.76 9.9)">
           <rect id="SVGID" className="cls-1" width="17.62" height={36} />
         </clipPath>
-        <clipPath id="clip-path-3" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-3" transform="translate(11.76 9.9)">
           <path
             id="SVGID-3"
             data-name="SVGID"
@@ -35,7 +35,7 @@ const Car5 = () => {
           <stop offset={0} stopColor="#15265f" />
           <stop offset={1} stopColor="#0d0c0d" />
         </linearGradient>
-        <clipPath id="clip-path-4" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-4" transform="translate(11.76 9.9)">
           <path
             id="SVGID-4"
             data-name="SVGID"
@@ -55,7 +55,7 @@ const Car5 = () => {
           <stop offset={0} stopColor="#040506" />
           <stop offset={1} stopColor="#161616" />
         </linearGradient>
-        <clipPath id="clip-path-5" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-5" transform="translate(11.76 9.9)">
           <path
             id="SVGID-5"
             data-name="SVGID"
@@ -72,7 +72,7 @@ const Car5 = () => {
           gradientTransform="matrix(14.08, 0, 0, -2.3, 14202.05, 734.34)"
           xlinkHref="#linear-gradient-2"
         />
-        <clipPath id="clip-path-6" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-6" transform="translate(11.76 9.9)">
           <path
             id="SVGID-6"
             data-name="SVGID"
@@ -92,7 +92,7 @@ const Car5 = () => {
           <stop offset={0} stopColor="#131015" />
           <stop offset={1} stopColor="#161616" />
         </linearGradient>
-        <clipPath id="clip-path-7" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-7" transform="translate(11.76 9.9)">
           <path
             id="SVGID-7"
             data-name="SVGID"
@@ -109,7 +109,7 @@ const Car5 = () => {
           gradientTransform="matrix(12.06, 0, 0, -6.1, 12012.68, 2816.68)"
           xlinkHref="#linear-gradient-2"
         />
-        <clipPath id="clip-path-8" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-8" transform="translate(11.76 9.9)">
           <path
             id="SVGID-8"
             data-name="SVGID"
@@ -126,7 +126,7 @@ const Car5 = () => {
           gradientTransform="matrix(11.15, 0, 0, -4.78, 11018.8, 2104.63)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-9" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-9" transform="translate(11.76 9.9)">
           <path
             id="SVGID-9"
             data-name="SVGID"
@@ -143,7 +143,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.42, 0, 0, -12.07, 470.54, 6040.13)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-10" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-10" transform="translate(11.76 9.9)">
           <path
             id="SVGID-10"
             data-name="SVGID"
@@ -160,7 +160,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.42, 0, 0, -12.07, 485.26, 6040.13)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-11" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-11" transform="translate(11.76 9.9)">
           <path
             id="SVGID-11"
             data-name="SVGID"
@@ -177,7 +177,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.49, 0, 0, -8.05, 544.35, 3871.5)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-12" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-12" transform="translate(11.76 9.9)">
           <path
             id="SVGID-12"
             data-name="SVGID"
@@ -194,7 +194,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.49, 0, 0, -8.05, 556.68, 3871.5)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-13" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-13" transform="translate(11.76 9.9)">
           <path
             id="SVGID-13"
             data-name="SVGID"
@@ -213,7 +213,7 @@ const Car5 = () => {
           <stop offset={0} stopColor="#fff" />
           <stop offset={1} stopColor="#344391" />
         </radialGradient>
-        <clipPath id="clip-path-14" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-14" transform="translate(11.76 9.9)">
           <path
             id="SVGID-14"
             data-name="SVGID"
@@ -229,7 +229,7 @@ const Car5 = () => {
           gradientTransform="translate(-297.3 -905.09) scale(0.7 0.77)"
           xlinkHref="#radial-gradient"
         />
-        <clipPath id="clip-path-16" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-16" transform="translate(11.76 9.9)">
           <rect
             id="SVGID-16"
             data-name="SVGID"
@@ -240,7 +240,7 @@ const Car5 = () => {
             height="6.19"
           />
         </clipPath>
-        <clipPath id="clip-path-17" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-17" transform="translate(11.76 9.9)">
           <path
             id="SVGID-17"
             data-name="SVGID"
@@ -260,7 +260,7 @@ const Car5 = () => {
           <stop offset={0} stopColor="#131015" />
           <stop offset={1} stopColor="#040506" />
         </linearGradient>
-        <clipPath id="clip-path-18" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-18" transform="translate(11.76 9.9)">
           <rect
             id="SVGID-18"
             data-name="SVGID"
@@ -271,7 +271,7 @@ const Car5 = () => {
             height="2.19"
           />
         </clipPath>
-        <clipPath id="clip-path-19" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-19" transform="translate(11.76 9.9)">
           <rect
             id="SVGID-19"
             data-name="SVGID"
@@ -282,7 +282,7 @@ const Car5 = () => {
             height="7.96"
           />
         </clipPath>
-        <clipPath id="clip-path-20" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-20" transform="translate(11.76 9.9)">
           <rect
             id="SVGID-20"
             data-name="SVGID"
@@ -293,7 +293,7 @@ const Car5 = () => {
             height="7.96"
           />
         </clipPath>
-        <clipPath id="clip-path-21" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-21" transform="translate(11.76 9.9)">
           <path
             id="SVGID-21"
             data-name="SVGID"
@@ -310,7 +310,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.86, 0, 0, -2.63, 1313.95, 468.35)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-22" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-22" transform="translate(11.76 9.9)">
           <path
             id="SVGID-22"
             data-name="SVGID"
@@ -329,7 +329,7 @@ const Car5 = () => {
           <stop offset={0} stopColor="#92b518" />
           <stop offset={1} stopColor="#c2a80a" />
         </radialGradient>
-        <clipPath id="clip-path-23" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-23" transform="translate(11.76 9.9)">
           <path
             id="SVGID-23"
             data-name="SVGID"
@@ -346,7 +346,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.96, 0, 0, -0.76, 1073.59, -103.12)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-24" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-24" transform="translate(11.76 9.9)">
           <path
             id="SVGID-24"
             data-name="SVGID"
@@ -363,7 +363,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.81, 0, 0, -2.68, 1195.73, 527.71)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-25" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-25" transform="translate(11.76 9.9)">
           <path
             id="SVGID-25"
             data-name="SVGID"
@@ -379,7 +379,7 @@ const Car5 = () => {
           gradientTransform="translate(-500.88 -678.73) scale(0.53)"
           xlinkHref="#radial-gradient-3"
         />
-        <clipPath id="clip-path-26" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-26" transform="translate(11.76 9.9)">
           <path
             id="SVGID-26"
             data-name="SVGID"
@@ -396,7 +396,7 @@ const Car5 = () => {
           gradientTransform="matrix(1.96, 0, 0, -0.73, 1047.33, -116.17)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-28" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-28" transform="translate(11.76 9.9)">
           <path
             id="SVGID-28"
             data-name="SVGID"
@@ -413,7 +413,7 @@ const Car5 = () => {
           gradientTransform="matrix(5.31, 0, 0, -0.29, 4691.33, -326.82)"
           xlinkHref="#linear-gradient-4"
         />
-        <clipPath id="clip-path-30" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-30" transform="translate(11.76 9.9)">
           <rect
             id="SVGID-30"
             data-name="SVGID"
@@ -424,7 +424,7 @@ const Car5 = () => {
             height="4.22"
           />
         </clipPath>
-        <clipPath id="clip-path-31" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-31" transform="translate(11.76 9.9)">
           <path
             id="SVGID-31"
             data-name="SVGID"
@@ -441,7 +441,7 @@ const Car5 = () => {
           gradientTransform="matrix(10.77, 0, 0, -9.31, 11064.75, 4046.92)"
           xlinkHref="#linear-gradient-11"
         />
-        <clipPath id="clip-path-32" transform="translate(11.76 9.9)">
+        <clipPath id="clipPath-32" transform="translate(11.76 9.9)">
           <path
             className="cls-1"
             d="M18,12.27h0a.54.54,0,0,1-.05.11l-.79-.2c0,2.47-.09,4.69-.09,5.73a.15.15,0,0,1,.14.15v1.41a.15.15,0,0,1-.13.15c0,2,0,3.73,0,5.3a.14.14,0,0,1,.09.14v1.4a.17.17,0,0,1-.14.16,36.65,36.65,0,0,1-.77,7.42,1.77,1.77,0,0,1-.9,1,8.28,8.28,0,0,1-2.8.81l-.93.11a.39.39,0,0,0-.3-.17H7.07a.39.39,0,0,0-.3.17c-.41,0-.83-.09-1.25-.17h0a7.31,7.31,0,0,1-2.65-.86,1.71,1.71,0,0,1-.73-.88,36.15,36.15,0,0,1-.76-7.42.18.18,0,0,1-.15-.16v-1.4a.16.16,0,0,1,.09-.14c0-1.57-.05-3.34,0-5.3a.17.17,0,0,1-.13-.15V18.07a.16.16,0,0,1,.15-.15c0-1-.08-3.29-.09-5.78l-.8.22,0-.1a.35.35,0,0,1,0-.14.34.34,0,0,1,.07-.19,5.86,5.86,0,0,1,.8-.38,54.55,54.55,0,0,1,.25-5.9,5.82,5.82,0,0,1,1-3.09h0A10,10,0,0,1,3.9,1.37,4,4,0,0,1,5.19.67,1.14,1.14,0,0,1,5.45.58,12.48,12.48,0,0,1,9.09.05h.24a12.21,12.21,0,0,1,3.55.53,1.34,1.34,0,0,1,.26.09,4,4,0,0,1,1.29.7c.64.55,1.11.71,1.47,1.19a5.84,5.84,0,0,1,1,3.09,58,58,0,0,1,.25,5.93,5.79,5.79,0,0,1,.79.39A.35.35,0,0,1,18,12.27Z"

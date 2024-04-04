@@ -3,7 +3,7 @@
         svg {
             .circle-progress-value {
                 stroke: $color;
-                stroke-linecap: round;
+                strokeLinecap: round;
             }
             .circle-progress-text {
                 fill: $color;

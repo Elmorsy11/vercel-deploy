@@ -5,18 +5,11 @@ $color: #fff;
 $color__patty: #151824;
 $color__secondary: #575b67;
 
-[dir="rtl"]body{
-  .menu_bottom_main  {
-    flex-direction: row-reverse ;
-    
-  }
-}
-
 .menu_bottom_main {
   left: 3.6rem;
   bottom: 1.9rem;
   transition: all 0.8s cubic-bezier(0.86, 0, 0.07, 1);
-  z-index: 1000;
+  z-index: 999;
 
   button {
     background-color: $color;
@@ -65,21 +58,11 @@ $color__secondary: #575b67;
   }
 
   .list {
-    
-    font-size: 1px;
     pointer-events: none;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    row-gap: 1rem;
-   z-index: 20;
+
     button {
-      // position: absolute;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
+      position: absolute;
       left: 0;
-      
       transition: all 0.8s cubic-bezier(0.86, 0, 0.07, 1);
       opacity: 0;
       z-index: -1;
@@ -112,7 +95,6 @@ $color__secondary: #575b67;
 
           svg {
             fill: #f1f1f1;
-            
           }
         }
       }

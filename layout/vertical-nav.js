@@ -1,413 +1,220 @@
-import { Accordion } from "react-bootstrap";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import Link from "next/link";
+import { Nav } from "react-bootstrap";
+import logo from "public/assets/main-logo.svg";
+import userImage from "public/assets/images/profile.jpg";
+import Icons from "../components/sidebar/Icons";
+import { useSession, signOut } from "next-auth/client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeadset } from "@fortawesome/free-solid-svg-icons";
-
-// translation
-import { useTranslation } from "next-i18next";
-import { useSession } from "next-auth/client";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+// import NotificationCircle from "components/dashboard/NotificationCircles";
+import Notifications from "components/dashboard/Notifications";
 import { toast } from "react-toastify";
-import { MdOutlineAttachEmail } from "react-icons/md";
+import axios from "axios";
+import { myDatabase } from "helpers/indexDb";
+import { TotalUsers, changeItdItc, dashboardInfo, topDrivers, violationsReport, weeklyTrendsChart } from "lib/slices/dashboardSlice";
+import { allTrainees } from "lib/slices/custodies";
+import { resetFilteredData, setFilteredItcLabel } from "lib/slices/filterMaindashboardSlice";
+import { useTrainees } from "context/TraineesContext";
+import { cancelledViolations } from "lib/slices/cancelledViolationsSlice";
+import { dashboardSheets } from "lib/slices/violationsSheetsSlice";
+const VerticalNav = ({ setSelectedLabel, selectedLabel, setBreadcrumbs, isActiveSideBar }) => {
+  const [session, loading] = useSession();
+  const safetyAdvisorCustodyId = session?.user?.data?.custodyId
+  const isSafetyAdvisor = session?.user?.data?.role === 'safety-advisor'
+  const safetyAdvisorCustodyName = session?.user.data?.custodyName
 
-const VerticalNav = () => {
-  let router = useRouter();
-  const session = useSession();
-  const userRole = session[0]?.user?.user?.role?.toLowerCase();
-  const { auth } = useSelector((state) => state);
+  // to reset selected date at filteration
+  const { isFilteredDateChanged, filteredItcLabel } = useSelector((state) => state.filterMaindashboard)
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { setTrainees } = useTrainees();
 
-  const { t } = useTranslation("main");
+  const handleSignOut = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("label");
+    signOut();
+    myDatabase.delete()
+    localStorage.clear()
+  };
+  const handleSync = async () => {
+    toast.info("Sync Vehicles Started");
+    try {
+      const res = await axios.get("sync/vehicles");
+      toast.success("Sync Vehicles Done");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something Went Wrong");
+    }
+  };
+  const fetchRequestsHandler = (safetyAdvisorCustodyId) => {
+    dispatch(violationsReport({ itc: safetyAdvisorCustodyId ?? null }));
+    dispatch(dashboardInfo({ itc: safetyAdvisorCustodyId ?? null }));
+    dispatch(TotalUsers({ itc: safetyAdvisorCustodyId ?? null }));
+    dispatch(topDrivers({ itc: safetyAdvisorCustodyId ?? null }));
+    dispatch(weeklyTrendsChart({ itc: safetyAdvisorCustodyId ?? null }));
+    dispatch(allTrainees({ itc: safetyAdvisorCustodyId ?? null }))
+    dispatch(cancelledViolations({ itc: safetyAdvisorCustodyId ?? null }))
+    dispatch(dashboardSheets({ itc: safetyAdvisorCustodyId ?? null }))
+
+  }
   return (
-    <>
-      <Accordion as="ul" className="navbar-nav iq-main-menu">
-        {userRole !== "user" && (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/" ? "active" : ""
-                  } nav-link`}
-                >
-                  <i className="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="22"
-                      viewBox="0 0 64 56.01"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M63.63,24.65,56,18.42V8.74A.76.76,0,0,0,55.25,8h-2.5a.76.76,0,0,0-.75.75v6.42L34.52.89a4,4,0,0,0-5.05,0L.37,24.65a1,1,0,0,0-.15,1.4L1.49,27.6a1,1,0,0,0,1.4.15L8,23.58V54a2,2,0,0,0,2,2H26a2,2,0,0,0,2-2V38l8,0V54a2,2,0,0,0,2,2l16,0a2,2,0,0,0,2-2V23.58l5.11,4.17a1,1,0,0,0,1.4-.14l1.27-1.55a1,1,0,0,0-.15-1.41ZM52,52h0L40,52V36a2,2,0,0,0-2-2L26,34a2,2,0,0,0-2,2h0V52H12V20.31L32,4,52,20.31Z"
-                      />
-                    </svg>
-                  </i>
-                  <span className="item-name">{t("Dashboard")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        )}
-        {userRole === "support" ? (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-            style={{
-              opacity: "0.5",
-              cursor: "pointer",
-            }}
-            onClick={() =>
-              toast.info("This Page Is For Users Only, You Can Login As User")
+    <Nav
+      className="d-flex flex-column align-items-center h-100  flex-nowrap "
+      style={{
+        backgroundColor: "#f6f6f6",
+        overflowY: "auto",
+        overflowX: "hidden",
+      }}
+    >
+      <section className="mt-5">
+        <div className="d-flex  flex-column justify-content-center align-items-center ">
+          <Image
+            src={logo}
+            alt="Logo"
+            width={isActiveSideBar ? 48 : 80}
+            height={isActiveSideBar ? 48 : 80}
+            className="sid-bar-logo"
+          />
+        </div>
+        <div className="d-flex  flex-column justify-content-center align-items-center py-4">
+          <Image
+            src={session?.user?.data?.image?.url || userImage}
+            alt="userImage"
+            width={isActiveSideBar ? 48 : 90}
+            height={isActiveSideBar ? 48 : 90}
+            className="rounded-circle"
+          />
+          {!isActiveSideBar && <h5 className="py-2 side-bar-user-name text-capitalize">
+            {session?.user?.data?.username || "Admin Name"}
+          </h5>}
+
+        </div>
+      </section>
+
+      <section className="mt-5">
+        <Nav.Item className="w-100" onClick={() => {
+          setSelectedLabel(null)
+          setTrainees(null)
+          localStorage.removeItem('Itd')
+          if (selectedLabel !== null || isFilteredDateChanged || filteredItcLabel) {
+            // reset date of filter at dashnoard 
+            dispatch(setFilteredItcLabel({ label: isSafetyAdvisor ? safetyAdvisorCustodyName : "All ITD" }))
+            dispatch(resetFilteredData())
+            dispatch(changeItdItc({ itc: null, itd: null, label: null }));
+
+            if (router.asPath === "/" || router.asPath.includes("/?")) {
+              if (isSafetyAdvisor) {
+                fetchRequestsHandler(safetyAdvisorCustodyId)
+              } else {
+                fetchRequestsHandler()
+              }
             }
-          >
-            {/* <Link> */}
-            <a>
-              <div className={` nav-link`}>
-                <i className="icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    viewBox="0 0 64 56.89"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M62.22,17.78a1.76,1.76,0,0,0-.66.13l-18.89,7h0l-1.14-.4c2.58-3.88,4.69-7.91,4.69-10.82C46.22,6.12,39.85,0,32,0S17.78,6.12,17.78,13.67a12.08,12.08,0,0,0,1.15,4.52L2.24,24A3.54,3.54,0,0,0,0,27.3V55.11a1.78,1.78,0,0,0,1.78,1.78,1.76,1.76,0,0,0,.66-.13l18.89-7,19.11,6.74a7.13,7.13,0,0,0,4.45,0l16.87-5.87A3.55,3.55,0,0,0,64,47.37V19.56A1.78,1.78,0,0,0,62.22,17.78ZM19.56,46.64l-16,5.92L3.4,27.35l16.16-5.62ZM32,3.56c5.88,0,10.67,4.53,10.67,10.11,0,3-4.24,9.88-10.67,17.42-6.43-7.54-10.67-14.42-10.67-17.42C21.33,8.09,26.12,3.56,32,3.56Zm8.89,49.35L23.11,46.63V25.42a108.18,108.18,0,0,0,7.52,9.52,1.82,1.82,0,0,0,2.74,0c1.41-1.61,3.74-4.34,6-7.44l1.49.53V52.91Zm3.55,0V28l16-5.91.15,25.2Z"
-                    />
-                  </svg>
-                </i>
-                <span className="item-name">{t("Track")}</span>
-              </div>
-            </a>
-            {/* </Link> */}
-          </Accordion.Item>
-        ) : (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/track" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/track" ? "active" : ""
-                  } nav-link`}
-                >
-                  <i className="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="22"
-                      viewBox="0 0 64 56.89"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M62.22,17.78a1.76,1.76,0,0,0-.66.13l-18.89,7h0l-1.14-.4c2.58-3.88,4.69-7.91,4.69-10.82C46.22,6.12,39.85,0,32,0S17.78,6.12,17.78,13.67a12.08,12.08,0,0,0,1.15,4.52L2.24,24A3.54,3.54,0,0,0,0,27.3V55.11a1.78,1.78,0,0,0,1.78,1.78,1.76,1.76,0,0,0,.66-.13l18.89-7,19.11,6.74a7.13,7.13,0,0,0,4.45,0l16.87-5.87A3.55,3.55,0,0,0,64,47.37V19.56A1.78,1.78,0,0,0,62.22,17.78ZM19.56,46.64l-16,5.92L3.4,27.35l16.16-5.62ZM32,3.56c5.88,0,10.67,4.53,10.67,10.11,0,3-4.24,9.88-10.67,17.42-6.43-7.54-10.67-14.42-10.67-17.42C21.33,8.09,26.12,3.56,32,3.56Zm8.89,49.35L23.11,46.63V25.42a108.18,108.18,0,0,0,7.52,9.52,1.82,1.82,0,0,0,2.74,0c1.41-1.61,3.74-4.34,6-7.44l1.49.53V52.91Zm3.55,0V28l16-5.91.15,25.2Z"
-                      />
-                    </svg>
-                  </i>
-                  <span className="item-name">{t("Track")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        )}
-        {userRole !== "user" ? (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/preventiveMaintenance" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/preventiveMaintenance" ? "active" : ""
-                  } nav-link `}
-                >
-                  <i className="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="22"
-                      viewBox="0 0 64 64.01"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M62.82,48.69,47.27,33.12a10,10,0,0,0-12.58-1.26L24,21.17V12L8,0,0,8,12,24h9.17L31.86,34.69a10,10,0,0,0,1.28,12.58L48.7,62.84a4,4,0,0,0,5.65,0l8.49-8.49a4,4,0,0,0,0-5.66ZM20,19.76V20H14L5.29,8.37,8.37,5.29,20,14ZM51.51,60,36,44.44A6,6,0,1,1,44.44,36L60,51.51ZM8,54a2,2,0,1,0,2-2A2,2,0,0,0,8,54ZM34.6,8.36A14.72,14.72,0,0,1,45.07,4a15,15,0,0,1,2.59.22L39,12.9l1.72,10.37L51.11,25l8.66-8.66a14.7,14.7,0,0,1-7.88,15.75l3,2.95a18,18,0,0,0,3.62-2.82,18.68,18.68,0,0,0,5-17.91A3.37,3.37,0,0,0,61,11.86a3.43,3.43,0,0,0-3.34.88l-8,8-5.52-.92-.93-5.53,8-8A3.41,3.41,0,0,0,49.66.57a18.74,18.74,0,0,0-17.9,5A18.25,18.25,0,0,0,28,11v8.47l2.76,2.76A14.72,14.72,0,0,1,34.6,8.36Zm-21.23,50a5.64,5.64,0,0,1-7.77,0,5.52,5.52,0,0,1,0-7.78L23.86,32.35,21,29.52,2.77,47.79A9.5,9.5,0,0,0,9.49,64a9.41,9.41,0,0,0,6.71-2.79L28.92,48.5A14.53,14.53,0,0,1,27,44.77Z"
-                      />
-                    </svg>
-                  </i>
-                  <span className="item-name">
-                    {t("Preventive_Maintenance")}
-                  </span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        ) : null}
-        <Accordion.Item as="li" eventKey="horizontal-menu" bsPrefix="nav-item">
-          <Link href="/reports" passHref={true}>
-            <a>
-              <div
-                className={`${
-                  router.pathname === "/reports" ? "active" : ""
-                } nav-link `}
-              >
-                <i className="icon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="23"
-                    viewBox="0 0 48 64"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M17,40H15a1,1,0,0,0-1,1V53a1,1,0,0,0,1,1h2a1,1,0,0,0,1-1V41A1,1,0,0,0,17,40Zm8-12H23a1,1,0,0,0-1,1V53a1,1,0,0,0,1,1h2a1,1,0,0,0,1-1V29A1,1,0,0,0,25,28Zm5,9V53a1,1,0,0,0,1,1h2a1,1,0,0,0,1-1V37a1,1,0,0,0-1-1H31A1,1,0,0,0,30,37ZM46.24,12.25,35.75,1.76A6,6,0,0,0,31.52,0H6A6,6,0,0,0,0,6V58a6,6,0,0,0,6,6H42a6,6,0,0,0,6-6V16.5a6,6,0,0,0-1.76-4.25ZM32,4.07a2,2,0,0,1,.93.53L43.41,15.08a2,2,0,0,1,.53.93H32ZM44,58a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2V6A2,2,0,0,1,6,4H28V17a3,3,0,0,0,3,3H44Z"
-                    />
-                  </svg>
-                </i>
-                <span className="item-name">{t("Reports")}</span>
-              </div>
+          }
+        }
+        }>
+          <Link href={session.user.data?.role === "safety-advisor" ? `/?itc=${session.user?.data?.custodyId}` : '/'}>
+            <a
+              className={` ${(router.pathname === "/" && !isActiveSideBar) && "active"
+                } nav-link text-center fs-4 d-flex align-items-center gap-3 mb-2 ${isActiveSideBar ? "" : "px-4"}  `}
+            >
+              <Icons type="dashboard" />
+              <span className={`text-muted ${isActiveSideBar ? "d-none" : ""} `}>Dashboard</span>
             </a>
           </Link>
-        </Accordion.Item>
-        {!(userRole == "user") ? (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
+        </Nav.Item>
+
+        <Nav.Item className="w-100 my-3"
+          onClick={() => {
+            setBreadcrumbs(["Home"])
+            dispatch(resetFilteredData());
+
+          }}
+        >
+          <Link href={session.user.data?.role === "safety-advisor" ? `/departments/department-details/${session?.user?.data?.custodyId}` : '/departments'}>
+            <a
+              className={`${(router.pathname === "/departments" && !isActiveSideBar) && "active"
+                } nav-link text-center fs-4 d-flex align-items-center gap-4 ${isActiveSideBar ? "" : "px-4"}  `}
+            >
+              <Icons type="itd" />
+              <span className={`text-muted ${isActiveSideBar ? "d-none" : ""} `}>{session?.user.data?.role === "safety-advisor" ? 'ITC' : 'ITD'}</span>
+            </a>
+          </Link>
+        </Nav.Item>
+
+        <Nav.Item className="w-100 ms-1">
+          <Link href="/map">
+            <a
+              className={` ${(router.pathname === "/map" && !isActiveSideBar) && "active"
+                } nav-link text-center fs-4 d-flex align-items-center gap-4 ${isActiveSideBar ? "" : "px-4"}  `}
+            >
+              <Icons type="map" />
+
+              <span className={`text-muted ${isActiveSideBar ? "d-none" : "ms-1"} `}>Map</span>
+            </a>
+          </Link>
+        </Nav.Item>
+
+        {session?.user?.data?.role === "superAdmin" && (
+          <Nav.Item
+            className="w-100 my-4"
+            style={{ cursor: "pointer" }}
+            onClick={handleSync}
+          >
+            <a
+              className={`nav-link text-center fs-4 d-flex align-items-center gap-4 ${isActiveSideBar ? "" : "px-4"}  `}
+            >
+              <Icons type="sync" />
+              <span className={`text-muted ${isActiveSideBar ? "d-none" : ""} `}>Sync</span>
+            </a>
+          </Nav.Item>
+        )}
+      </section>
+      <div
+        className="sidebar-footer  w-100"
+        style={{
+          marginTop: isActiveSideBar ? "130px" : "80px",
+        }}
+      >
+        <section className="sidebar-footer-content mx-auto w-100">
+          <Notifications isActiveSideBar={isActiveSideBar} />
+          <a
+            onClick={handleSignOut}
+            className={` text-center fs-4 d-flex align-items-center gap-2 mt-4 ${isActiveSideBar ? "justify-content-center" : "px-5"}  `}
             style={{
-              pointerEvents: userRole === "support" ? "none" : "auto",
-              opacity: userRole === "support" ? "0.5" : "1",
+              cursor: "pointer",
             }}
           >
-            <Link href="/scheduledReports" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/scheduledReports" ? "active" : ""
-                  } nav-link `}
-                >
-                  <i className="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="22"
-                      height="23"
-                      viewBox="0 0 48 64"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M42,8H30.92A6.53,6.53,0,0,0,31,7,7,7,0,0,0,17,7a5.47,5.47,0,0,0,.08,1H6a6,6,0,0,0-6,6V58a6,6,0,0,0,6,6H42a6,6,0,0,0,6-6V14A6,6,0,0,0,42,8ZM24,4a3,3,0,1,1-3,3A3,3,0,0,1,24,4ZM44,58a2,2,0,0,1-2,2H6a2,2,0,0,1-2-2V14a2,2,0,0,1,2-2h6v2.5A1.51,1.51,0,0,0,13.5,16h21A1.5,1.5,0,0,0,36,14.5V12h6a2,2,0,0,1,2,2ZM14,41a3,3,0,1,0,3,3A3,3,0,0,0,14,41Zm21,1H21a1,1,0,0,0-1,1v2a1,1,0,0,0,1,1H35a1,1,0,0,0,1-1V43A1,1,0,0,0,35,42ZM15.77,33.8l8-7.95a.68.68,0,0,0,0-1l-1.58-1.59a.68.68,0,0,0-.95,0l-5.95,5.9L12.75,26.6a.68.68,0,0,0-.95,0l-1.59,1.57a.69.69,0,0,0,0,1l4.64,4.67A.64.64,0,0,0,15.77,33.8ZM35,30H25.3l-4,4H35a1,1,0,0,0,1-1V31A1,1,0,0,0,35,30Z"
-                      />
-                    </svg>
-                  </i>
-                  <span className="item-name">{t("Scheduled_Reports")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        ) : null}
-        {!(
-          userRole === "user" ||
-          userRole === "accountmanager" ||
-          userRole === "fleet"
-        ) ? (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/driversManagement" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/driversManagement" ? "active" : ""
-                  } nav-link `}
-                >
-                  <i className="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      viewBox="0 0 64 51.2"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M62.83,35.83l-1.65-.95a13.68,13.68,0,0,0,0-2.56l1.66-.95a2.3,2.3,0,0,0,1-2.7,16.56,16.56,0,0,0-3.67-6.35,2.3,2.3,0,0,0-2.87-.44l-1.65.95a12.91,12.91,0,0,0-2.22-1.28v-1.9a2.31,2.31,0,0,0-1.82-2.27,16.74,16.74,0,0,0-7.32,0,2.32,2.32,0,0,0-1.82,2.27v1.9a12.91,12.91,0,0,0-2.22,1.28l-1.65-.95a2.3,2.3,0,0,0-2.87.44,16.86,16.86,0,0,0-3.67,6.34,2.34,2.34,0,0,0,1.06,2.72l1.65.95a13.68,13.68,0,0,0,0,2.56l-1.66,1a2.34,2.34,0,0,0-1,2.71,16.56,16.56,0,0,0,3.67,6.35,2.33,2.33,0,0,0,2.87.44l1.65-1a12.91,12.91,0,0,0,2.22,1.28v1.9a2.31,2.31,0,0,0,1.82,2.27,16.94,16.94,0,0,0,7.32,0,2.32,2.32,0,0,0,1.82-2.27v-1.9a12.91,12.91,0,0,0,2.22-1.28l1.65,1a2.33,2.33,0,0,0,2.87-.44,16.86,16.86,0,0,0,3.67-6.34,2.35,2.35,0,0,0-1.06-2.73Zm-5.16.72,2.94,1.7a13.22,13.22,0,0,1-2.28,4l-2.94-1.7a11.45,11.45,0,0,1-5.11,3v3.4a13.43,13.43,0,0,1-4.56,0v-3.4a11.58,11.58,0,0,1-5.11-3l-2.94,1.7a13.35,13.35,0,0,1-2.28-4l2.94-1.7a11.67,11.67,0,0,1,0-5.9L35.39,29A13.35,13.35,0,0,1,37.67,25l2.94,1.7a11.45,11.45,0,0,1,5.11-2.95v-3.4a14,14,0,0,1,4.56,0v3.4a11.54,11.54,0,0,1,5.11,2.95L58.33,25A13.35,13.35,0,0,1,60.61,29l-2.94,1.7A11.67,11.67,0,0,1,57.67,36.55ZM48,27.15a6.45,6.45,0,1,0,6.45,6.45A6.46,6.46,0,0,0,48,27.15Zm0,9.7a3.25,3.25,0,1,1,3.25-3.25A3.26,3.26,0,0,1,48,36.85ZM22.4,25.6A12.8,12.8,0,1,0,9.6,12.8,12.8,12.8,0,0,0,22.4,25.6Zm0-22.4a9.6,9.6,0,1,1-9.6,9.6A9.62,9.62,0,0,1,22.4,3.2ZM4.8,48a1.6,1.6,0,0,1-1.6-1.6V42.24A10.25,10.25,0,0,1,13.44,32c2,0,3.91,1.6,9,1.6a20.11,20.11,0,0,0,5.65-.87,20,20,0,0,1,.42-3.4A18.57,18.57,0,0,1,22.4,30.4c-4.71,0-6.08-1.6-9-1.6A13.44,13.44,0,0,0,0,42.24V46.4a4.8,4.8,0,0,0,4.8,4.8H38.5A19.62,19.62,0,0,1,34.15,48Z"
-                      />
-                    </svg>
-                  </i>
-                  <span className="item-name">{t("Operate_Driver")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        ) : null}
-        {!(
-          userRole === "user" ||
-          userRole === "accountmanager" ||
-          userRole === "fleet"
-        ) ? (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/EmailLog" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/EmailLog" ? "active text-white" : ""
-                  } nav-link `}
-                >
-                  <i className="icon">
-                    <MdOutlineAttachEmail
-                      style={{
-                        width: 24,
-                        fontSize: 24,
-                      }}
-                    />
-                  </i>
-
-                  <span className="item-name">{t("Email_Log")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        ) : null}
-        {!(userRole === "user" || userRole === "accountmanager") ? (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/management" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/management" ? "active" : ""
-                  } nav-link `}
-                >
-                  <i className="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      viewBox="0 0 64 51.21"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M53.85,19.65l-.25-.39a8.28,8.28,0,0,1-1.22,0l-.25.4a2.4,2.4,0,0,1-2.75,1A9.11,9.11,0,0,1,46,18.86a2.39,2.39,0,0,1-.54-3l.25-.43a8.56,8.56,0,0,1-.61-1.06h-.91a2.4,2.4,0,0,1-2.36-2,9.25,9.25,0,0,1,0-3.85,2.4,2.4,0,0,1,2.36-1.95h.9a8.56,8.56,0,0,1,.61-1.06l-.26-.45a2.41,2.41,0,0,1,.52-3A9.29,9.29,0,0,1,49.27.13a2.4,2.4,0,0,1,2.85,1.06l.26.44a8.28,8.28,0,0,1,1.22,0l.26-.44a2.39,2.39,0,0,1,2.86-1,9.31,9.31,0,0,1,3.35,1.91,2.39,2.39,0,0,1,.51,3l-.26.44a8.56,8.56,0,0,1,.61,1.06h.51a2.4,2.4,0,0,1,2.36,2,9.25,9.25,0,0,1,0,3.85,2.4,2.4,0,0,1-2.36,1.95h-.5a8.56,8.56,0,0,1-.61,1.06l.25.43A2.4,2.4,0,0,1,60,18.87a9.23,9.23,0,0,1-3.4,1.79,2.41,2.41,0,0,1-2.77-1Zm1.22-3.45L56.13,18A8.5,8.5,0,0,0,58,17l-1.06-1.83.64-.75a6,6,0,0,0,1.1-1.91l.33-.93h2.11a8.59,8.59,0,0,0,0-2.15H59l-.33-.93a6.18,6.18,0,0,0-1.1-1.91l-.64-.75L58,4a8.28,8.28,0,0,0-1.87-1.08L55.06,4.7l-1-.18a5.87,5.87,0,0,0-2.21,0l-1,.18L49.85,2.87A7.79,7.79,0,0,0,48,4l1,1.83-.64.75a6.15,6.15,0,0,0-1.09,1.91L47,9.37H44.88a8.59,8.59,0,0,0,0,2.15H47l.33.93a6.36,6.36,0,0,0,1.09,1.91l.64.75L48,17A8,8,0,0,0,49.86,18l1.06-1.83,1,.18a5.87,5.87,0,0,0,2.21,0ZM14.53,45.44V42.28a17.43,17.43,0,0,1-3.64-2.11L8.14,41.76a2.4,2.4,0,0,1-3-.46A21,21,0,0,1,.11,32.49,2.4,2.4,0,0,1,1.19,29.7l2.73-1.59a17.44,17.44,0,0,1,0-4.21L1.19,22.32a2.4,2.4,0,0,1-1.08-2.8,21,21,0,0,1,5.06-8.81,2.41,2.41,0,0,1,3-.46l2.74,1.59a17.88,17.88,0,0,1,3.64-2.11V6.57A2.39,2.39,0,0,1,16.4,4.23a21.18,21.18,0,0,1,10.17,0,2.41,2.41,0,0,1,1.89,2.34V9.73a17.84,17.84,0,0,1,3.64,2.1l2.74-1.58a2.42,2.42,0,0,1,3,.46A22.84,22.84,0,0,1,43,19.56a2.39,2.39,0,0,1-1,2.77l-2.5,1.58a17.44,17.44,0,0,1,0,4.21l2.81,1.75a2.4,2.4,0,0,1,1.08,2.54c-.69,3.13-3.3,6.46-5.59,8.92a2.4,2.4,0,0,1-3,.44L32.1,40.18a17.88,17.88,0,0,1-3.64,2.11v3.16a2.4,2.4,0,0,1-1.88,2.34,21.29,21.29,0,0,1-10.19,0,2.42,2.42,0,0,1-1.86-2.35Zm3.2-.62a19.09,19.09,0,0,0,7.53,0V40.05l1.07-.38A14.45,14.45,0,0,0,30.92,37l.86-.74,4.14,2.39a20.44,20.44,0,0,0,4.21-6.52L36,29.77l.21-1.11a14.81,14.81,0,0,0,0-5.31L36,22.24l4.14-2.39a20.33,20.33,0,0,0-4.21-6.52l-4.14,2.39L30.92,15a14.16,14.16,0,0,0-4.59-2.65L25.26,12V7.19a19.09,19.09,0,0,0-7.53,0V12l-1.07.38A14.45,14.45,0,0,0,12.07,15l-.86.74L7.07,13.34A19.36,19.36,0,0,0,3.3,19.86l4.14,2.39-.21,1.11a14.81,14.81,0,0,0,0,5.31l.21,1.11L3.3,32.16a19.12,19.12,0,0,0,3.77,6.52l4.14-2.39.86.74a14.16,14.16,0,0,0,4.59,2.65l1.07.38Zm3.84-10.53A8.29,8.29,0,1,1,29.86,26,8.29,8.29,0,0,1,21.57,34.29Zm0-13.37A5.09,5.09,0,1,0,26.66,26a5.1,5.1,0,0,0-5.09-5.09ZM53.85,50.08l-.25-.39a8.28,8.28,0,0,1-1.22,0l-.25.4a2.4,2.4,0,0,1-2.75,1A9.11,9.11,0,0,1,46,49.29a2.39,2.39,0,0,1-.54-3l.25-.43a8.56,8.56,0,0,1-.61-1.06h-.91a2.4,2.4,0,0,1-2.36-2,9.25,9.25,0,0,1,0-3.85,2.4,2.4,0,0,1,2.36-2h.9a8.56,8.56,0,0,1,.61-1.06l-.26-.45a2.41,2.41,0,0,1,.52-3,9.41,9.41,0,0,1,3.34-1.89,2.4,2.4,0,0,1,2.85,1.06l.26.43a8.28,8.28,0,0,1,1.22,0l.26-.43a2.39,2.39,0,0,1,2.86-1.05,9.43,9.43,0,0,1,3.35,1.9,2.39,2.39,0,0,1,.51,3l-.26.44A8.56,8.56,0,0,1,60.93,37h.51a2.4,2.4,0,0,1,2.36,2,9.25,9.25,0,0,1,0,3.85,2.4,2.4,0,0,1-2.36,1.95h-.5a8.56,8.56,0,0,1-.61,1.06l.25.43a2.4,2.4,0,0,1-.55,3,9.23,9.23,0,0,1-3.4,1.79,2.43,2.43,0,0,1-2.77-1Zm1.22-3.46,1.06,1.83A8.5,8.5,0,0,0,58,47.37l-1.06-1.83.64-.75a6,6,0,0,0,1.1-1.91L59,42h2.11a8.59,8.59,0,0,0,0-2.15H59l-.33-.93A6.18,6.18,0,0,0,57.58,37l-.64-.75L58,34.38a8.28,8.28,0,0,0-1.87-1.08l-1.06,1.83-1-.18a5.87,5.87,0,0,0-2.21,0l-1,.18L49.86,33.3A8.21,8.21,0,0,0,48,34.38l1,1.83-.64.75a6.15,6.15,0,0,0-1.09,1.91L47,39.8H44.88a8.59,8.59,0,0,0,0,2.15H47l.33.93a6.36,6.36,0,0,0,1.09,1.91l.64.75-1,1.83a8,8,0,0,0,1.86,1.08l1.06-1.83,1,.18a5.87,5.87,0,0,0,2.21,0ZM56,40.8a3.2,3.2,0,1,0-3.2,3.2A3.2,3.2,0,0,0,56,40.8Zm0-30.42a3.2,3.2,0,1,0-3.2,3.2A3.2,3.2,0,0,0,56,10.38Z"
-                      />
-                    </svg>
-                  </i>
-                  <span className="item-name">{t("Management")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        ) : null}
-        {!(
-          userRole === "user" ||
-          userRole === "accountmanager" ||
-          userRole === "fleet"
-        ) && (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/VehiclesCamera" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/VehiclesCamera" ? "active" : ""
-                  } nav-link `}
-                >
-                  <i className="icon">
-                    <svg
-                      width="24px"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <g clipPath="url(#clip0_7_176)">
-                        <path
-                          fill="currentColor"
-                          d="M19 4H18.492L16.308 1.168C16.0265 0.805806 15.6663 0.512417 15.2547 0.310054C14.843 0.107691 14.3907 0.00166304 13.932 0L10.068 0C9.6093 0.00166304 9.15699 0.107691 8.74533 0.310054C8.33368 0.512417 7.97347 0.805806 7.692 1.168L5.508 4H5C3.67441 4.00159 2.40356 4.52888 1.46622 5.46622C0.528882 6.40356 0.00158786 7.67441 0 9L0 19C0.00158786 20.3256 0.528882 21.5964 1.46622 22.5338C2.40356 23.4711 3.67441 23.9984 5 24H19C20.3256 23.9984 21.5964 23.4711 22.5338 22.5338C23.4711 21.5964 23.9984 20.3256 24 19V9C23.9984 7.67441 23.4711 6.40356 22.5338 5.46622C21.5964 4.52888 20.3256 4.00159 19 4ZM9.276 2.39C9.36967 2.26905 9.48969 2.17106 9.62693 2.10348C9.76418 2.0359 9.91502 2.00051 10.068 2H13.932C14.085 2.00066 14.2357 2.03611 14.373 2.10368C14.5102 2.17125 14.6302 2.26916 14.724 2.39L15.966 4H8.034L9.276 2.39ZM22 19C22 19.7956 21.6839 20.5587 21.1213 21.1213C20.5587 21.6839 19.7956 22 19 22H5C4.20435 22 3.44129 21.6839 2.87868 21.1213C2.31607 20.5587 2 19.7956 2 19V9C2 8.20435 2.31607 7.44129 2.87868 6.87868C3.44129 6.31607 4.20435 6 5 6H19C19.7956 6 20.5587 6.31607 21.1213 6.87868C21.6839 7.44129 22 8.20435 22 9V19Z"
-                        />
-                        <path
-                          fill="currentColor"
-                          d="M12 8C10.8133 8 9.65328 8.35189 8.66658 9.01118C7.67989 9.67047 6.91085 10.6075 6.45673 11.7039C6.0026 12.8003 5.88378 14.0067 6.11529 15.1705C6.3468 16.3344 6.91825 17.4035 7.75736 18.2426C8.59648 19.0818 9.66558 19.6532 10.8295 19.8847C11.9933 20.1162 13.1997 19.9974 14.2961 19.5433C15.3925 19.0892 16.3295 18.3201 16.9888 17.3334C17.6481 16.3467 18 15.1867 18 14C17.9984 12.4092 17.3658 10.884 16.2409 9.75911C15.116 8.63424 13.5908 8.00159 12 8ZM12 18C11.2089 18 10.4355 17.7654 9.77772 17.3259C9.11993 16.8864 8.60723 16.2616 8.30448 15.5307C8.00173 14.7998 7.92252 13.9956 8.07686 13.2196C8.2312 12.4437 8.61217 11.731 9.17158 11.1716C9.73099 10.6122 10.4437 10.2312 11.2196 10.0769C11.9956 9.92252 12.7998 10.0017 13.5307 10.3045C14.2616 10.6072 14.8864 11.1199 15.3259 11.7777C15.7654 12.4355 16 13.2089 16 14C16 15.0609 15.5786 16.0783 14.8284 16.8284C14.0783 17.5786 13.0609 18 12 18Z"
-                        />
-                      </g>
-                      <defs>
-                        <clipPath id="clip0_7_176">
-                          <rect width="24" height="24" fill="currentColor" />
-                        </clipPath>
-                      </defs>
-                    </svg>
-                  </i>
-                  <span className="item-name">{t("Vehicles_Camera")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        )}
-        {userRole === "support" ? (
-          <Accordion.Item
-            as="li"
-            eventKey="horizontal-menu"
-            bsPrefix="nav-item"
-          >
-            <Link href="/notify" passHref={true}>
-              <a>
-                <div
-                  className={`${
-                    router.pathname === "/notify" ? "active" : ""
-                  } nav-link `}
-                >
-                  <i className="icon">
-                    <svg
-                      width="24px"
-                      height="24px"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6.4288 2.41297C6.70116 2.10089 6.66896 1.62711 6.35689 1.35475C6.04481 1.08238 5.57103 1.11458 5.29867 1.42665L4.00686 2.90682C3.2741 3.74643 2.85987 4.81695 2.83663 5.9311L2.77995 8.64876C2.77131 9.06288 3.10003 9.4056 3.51415 9.41423C3.92827 9.42287 4.27099 9.09416 4.27963 8.68003L4.3363 5.96238C4.3522 5.20006 4.63562 4.4676 5.13699 3.89314L6.4288 2.41297Z"
-                        fill="currentColor"
-                      />
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M6.237 7.70074C6.3759 5.48001 8.21749 3.75 10.4426 3.75H11V3C11 2.44772 11.4477 2 12 2C12.5523 2 13 2.44772 13 3V3.75H13.5574C15.7825 3.75 17.6241 5.48001 17.763 7.70074L17.984 11.2342C18.0682 12.5814 18.5205 13.8797 19.2916 14.9876C19.9882 15.9886 19.368 17.3712 18.1571 17.5165L14.75 17.9254V19C14.75 20.5188 13.5188 21.75 12 21.75C10.4812 21.75 9.24998 20.5188 9.24998 19V17.9254L5.84285 17.5165C4.63192 17.3712 4.0117 15.9886 4.70839 14.9876C5.47945 13.8797 5.93173 12.5814 6.016 11.2342L6.237 7.70074ZM10.4426 5.25C9.00956 5.25 7.82353 6.36417 7.73407 7.79438L7.51307 11.3278C7.41168 12.949 6.86742 14.5112 5.93957 15.8444C5.88922 15.9168 5.93405 16.0167 6.02157 16.0272L9.75923 16.4757C11.2477 16.6543 12.7522 16.6543 14.2407 16.4757L17.9784 16.0272C18.0659 16.0167 18.1107 15.9168 18.0604 15.8444C17.1325 14.5112 16.5883 12.949 16.4869 11.3278L16.2659 7.79438C16.1764 6.36417 14.9904 5.25 13.5574 5.25H10.4426ZM12 20.25C11.3096 20.25 10.75 19.6904 10.75 19V18.25H13.25V19C13.25 19.6904 12.6903 20.25 12 20.25Z"
-                        fill="currentColor"
-                      />
-                      <path
-                        d="M17.6431 1.35475C17.331 1.62711 17.2988 2.10089 17.5712 2.41297L18.863 3.89314C19.3643 4.4676 19.6478 5.20006 19.6637 5.96238L19.7203 8.68003C19.729 9.09416 20.0717 9.42287 20.4858 9.41423C20.8999 9.4056 21.2287 9.06288 21.22 8.64876L21.1633 5.9311C21.1401 4.81695 20.7259 3.74643 19.9931 2.90682L18.7013 1.42665C18.4289 1.11458 17.9552 1.08238 17.6431 1.35475Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </i>
-                  <span className="item-name">{t("Notify")}</span>
-                </div>
-              </a>
-            </Link>
-          </Accordion.Item>
-        ) : (
-          ""
-        )}
-      </Accordion>
-      <div className="app-version text-light">
-        V@{process.env.NEXT_PUBLIC_VERSION}
+            <span
+              className="mb-1  d-flex align-items-center justify-content-center"
+              style={{
+                width: "50px",
+                height: "50px",
+                borderRadius: "50%",
+              }}
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 2H15C15.5304 2 16.0391 2.21071 16.4142 2.58579C16.7893 2.96086 17 3.46957 17 4V6H15V4H6V20H15V18H17V20C17 20.5304 16.7893 21.0391 16.4142 21.4142C16.0391 21.7893 15.5304 22 15 22H6C5.46957 22 4.96086 21.7893 4.58579 21.4142C4.21071 21.0391 4 20.5304 4 20V4C4 3.46957 4.21071 2.96086 4.58579 2.58579C4.96086 2.21071 5.46957 2 6 2Z"
+                  fill="#414141"
+                />
+                <path
+                  d="M16.09 15.59L17.5 17L22.5 12L17.5 7L16.09 8.41L18.67 11H9V13H18.67L16.09 15.59Z"
+                  fill="#414141"
+                />
+              </svg>
+            </span>
+            <span className={`text-muted ${isActiveSideBar ? "d-none" : ""} `}>Logout</span>
+          </a>
+        </section>
       </div>
-    </>
+    </Nav>
   );
 };
 
