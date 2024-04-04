@@ -33,7 +33,6 @@ export const locDataModel = {
   InstantFuelConsum: -1,
   TotalFuelConsum: -1,
   CoolantTemp: -1,
-  lastTrips: "",
 };
 
 export const locConfigModel = {
@@ -87,184 +86,6 @@ export const locConfigModel = {
   Temp2: 3000,
   Temp3: 3000,
   Temp4: 3000,
-  lastTrips: "",
-};
-export const validateEmail = (email) => {
-  const regex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  const result = regex.test(email);
-  return result;
-};
-export const formatDurDates = (strDate, endDate, lvl = 6) => {
-  const strD = moment(strDate);
-  const endD = moment(endDate);
-
-  return formatDuration(endD.diff(strD), lvl);
-};
-const getAvg = (vals, navalue, dev = 1) => {
-  vals = vals.filter((x) => x && x != navalue && !isNaN(x));
-  let avg = !vals.length
-    ? navalue
-    : vals.reduce((a, b) => a + b, 0) / vals.length;
-  return avg == navalue ? navalue : avg / dev;
-};
-export const handleShowConfigItems = (x, item) => {
-  switch (x) {
-    case "Speed":
-      return (
-        <>
-          {item["Speed"] ?? 0}{" "}
-          <span style={{ fontSize: "0.438rem" }}>km/h</span>
-        </>
-      );
-    case "Mileage":
-      return (
-        <>
-          {item["Mileage"] / 1000 ?? 0}{" "}
-          <span style={{ fontSize: "0.438rem" }}>km</span>
-        </>
-      );
-    case "TotalWeight":
-      if (item["WeightReading"] > 0) {
-        return (
-          <>
-            {item["WeightReading"]}
-            <span style={{ fontSize: "0.438rem" }}>kg</span>
-          </>
-        );
-      } else {
-        return null;
-      }
-    case "Temp":
-      var listOfTemps = [item?.Temp1, item?.Temp2, item?.Temp3, item?.Temp4];
-      var listOfFilteredTemps = listOfTemps.filter((item) => item !== 3000);
-
-      if (listOfFilteredTemps.length > 0) {
-        let AVGListOfFilteredTemps =
-          listOfFilteredTemps.reduce((acc, item) => acc + item, 0) /
-          listOfFilteredTemps.length;
-
-        return (
-          <>
-            {AVGListOfFilteredTemps?.toFixed(1) ?? 0}{" "}
-            <span style={{ fontSize: "0.438rem" }}>C</span>
-          </>
-        );
-      } else {
-        return "Disconnected";
-      }
-    case "Humidy":
-      var listOfHums = [item["Hum1"], item["Hum2"], item["Hum3"], item["Hum4"]];
-      if (getAvg(listOfHums, -1, 10) != -1) {
-        return (
-          <>
-            {getAvg(listOfHums, -1, 10) ?? 0}{" "}
-            <span style={{ fontSize: "0.438rem" }}>%</span>
-          </>
-        );
-      } else {
-        return "Not Available";
-      }
-    case "EngineStatus":
-      return item["EngineStatus"] == true ? "On" : "Off";
-
-    case "Direction":
-      return item["Direction"] !== 0 ? item["Direction"] : "0";
-    default:
-      return item[x];
-  }
-};
-
-// calculate group badge
-export const calcGroupBadge = (root) => {
-  if (!root?.children) return 1;
-  let sum = 0;
-  root?.children.forEach((group) => {
-    if (group.children && Array.isArray(group.children)) {
-      group.count += calcGroupBadge(group);
-      sum += group.count;
-    } else {
-      sum += 1;
-    }
-  });
-
-  return sum;
-};
-
-// create the tree format that we needed in the rc-tree
-export const convertTreeFormat = (group) => {
-  if (!group?.children) return group;
-
-  const treeFormat = {
-    title: group.Name,
-    ID: group.ID,
-    children: [],
-  };
-
-  for (let childGroup of group.children) {
-    if (childGroup?.children?.length > 0 || !childGroup.children) {
-      treeFormat.children.push(convertTreeFormat(childGroup));
-    }
-  }
-
-  return treeFormat;
-};
-
-// remove empty subgroups in case filter
-export const removeEmptySubgroups = (array) => {
-  return array.filter((obj) => {
-    if (obj.children && Array.isArray(obj.children)) {
-      obj.children = removeEmptySubgroups(obj.children);
-      if (obj.children.length > 0) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
-  });
-};
-
-export const formatDuration = (ms, lvl = 6) => {
-  const pd = (n) => n.toString().padStart(2, "0");
-  const mms = 6e4;
-  const hh = 60 * mms;
-  const dd = 24 * hh;
-  const mm = 30 * dd;
-  const yy = 365 * dd;
-  const yrs = lvl < 6 ? 0 : Math.floor(ms / yy);
-  const mths = lvl < 5 ? 0 : Math.floor((lvl <= 5 ? ms : ms % yy) / mm);
-  const days = lvl < 4 ? 0 : Math.floor((lvl <= 4 ? ms : ms % mm) / dd);
-  const hs = lvl < 3 ? 0 : Math.floor((lvl <= 3 ? ms : ms % dd) / hh);
-  const mins = lvl < 2 ? 0 : Math.floor((lvl <= 2 ? ms : ms % hh) / mms);
-  const ss = Math.floor((lvl <= 1 ? ms : ms % mms) / 1e3);
-
-  return `${yrs ? `${pd(yrs)}y-` : ""}${mths || yrs ? `${pd(mths)}m-` : ""}${
-    days || mths || yrs ? `${pd(days)}d ` : ""
-  }${hs || days || mths || yrs ? `${pd(hs)}:` : ""}${pd(mins)}:${pd(ss)}`;
-};
-
-export const formatDurationV2 = (seconds) => {
-  let hours = Math.floor(seconds / 3600);
-  let minutes = Math.floor((seconds % 3600) / 60);
-  let remainingSeconds = seconds % 60;
-
-  let formattedDuration = "";
-
-  if (seconds < 60) {
-    formattedDuration += `00:00:${
-      remainingSeconds > 9 ? remainingSeconds : `0${remainingSeconds}`
-    }`;
-  } else if (seconds < 3600) {
-    formattedDuration += `00:${minutes > 9 ? minutes : `0${minutes}`}:${
-      remainingSeconds > 9 ? remainingSeconds : `0${remainingSeconds}`
-    }`;
-  } else {
-    formattedDuration += `${hours > 9 ? hours : `0${hours}`}:${
-      minutes > 9 ? minutes : `0${minutes}`
-    }:${remainingSeconds > 9 ? remainingSeconds : `0${remainingSeconds}`}`;
-  }
-  return formattedDuration;
 };
 
 export const Date2KSA = (_date) => moment(_date).utc().local();
@@ -291,8 +112,6 @@ export const GetStatusString = (vehicleStatus) => {
       return "Offline.";
     case 204:
       return "Sleep Mode.";
-    case 500:
-      return "Not connected";
     case 101:
       return "Vehicle is Over Speeding.";
     case 100:
@@ -308,6 +127,26 @@ export const GetStatusString = (vehicleStatus) => {
   }
 };
 
+export const GetStatusStringMenu = (vehicleStatus) => {
+  switch (vehicleStatus) {
+    case 600:
+    case 5:
+      return "Offline.";
+    case 101:
+      return "Over Speeding";
+    case 100:
+      return "running";
+    case 0:
+      return "Stopped.";
+    case 1:
+      return "running";
+    case 2:
+      return "Idle";
+    default:
+      return "Invalid";
+  }
+};
+
 export const isValidAddress = (_address) =>
   !(
     _address == null ||
@@ -316,94 +155,79 @@ export const isValidAddress = (_address) =>
   );
 
 export const WeightVoltToKG = (_locInfo, _settings) => {
-  if (_locInfo.WeightVolt < _settings.MinVolt) {
-    return _settings.HeadWeight;
-  }
-  if (_locInfo.WeightVolt > _settings.MaxVolt) {
-    return _settings.TotalWeight;
-  }
   if (_locInfo.WeightVolt < 0) return _settings.WeightReading;
   if (
-    _locInfo.WeightVolt < _settings.MinVolt ||
-    _settings.MinVolt == _settings.MaxVolt
+    _locInfo.WeightVolt < _settings.MinVoltage ||
+    _settings.MinVoltage == _settings.MaxVoltage
   )
     return "Not Available";
 
   let weight =
-    _settings.MaxVolt == _settings.MinVolt
+    _settings.MaxVoltage == _settings.MinVoltage
       ? 0
-      : ((_locInfo.WeightVolt - _settings.MinVolt) * _settings.TotalWeight) /
-        (_settings.MaxVolt - _settings.MinVolt);
+      : ((_locInfo.WeightVolt - _settings.MinVoltage) * _settings.TotalWeight) /
+      (_settings.MaxVoltage - _settings.MinVoltage);
   weight += _settings.HeadWeight;
-  weight = weight.toFixed(1);
-  return weight;
+  return weight.toFixed(1);
 };
 
-export const iconUrl = (config, iconUrlLocal, VehicleStatus) => {
-  let iconUrlPass;
-  const iconsWithNames = {
-    sedan1: "/assets/images/cars/car0/",
-    minivan: "/assets/images/cars/car1/",
-    sedan2: "/assets/images/cars/car2/",
-    pickup: "/assets/images/cars/car3/",
-    truck_head: "/assets/images/cars/car4/",
-    reefer_truck: "/assets/images/cars/car5/",
-    jeep: "/assets/images/cars/car6/",
-    bus: "/assets/images/cars/car7/",
-    truck: "/assets/images/cars/car8/",
-    forklift: "/assets/images/cars/car9/",
-    generator: "/assets/images/cars/car10/",
-  };
-
-  if (config == null || config == "null" || config == undefined) {
-    if (iconUrlLocal != undefined) {
-      iconUrlPass = iconUrlLocal;
-    } else {
-      iconUrlPass = iconsWithNames["sedan1"];
-    }
-  } else {
-    iconUrlPass =
-      iconsWithNames[
-        typeof config == "string" && config.includes("icon")
-          ? JSON.parse(config).icon
-          : config.icon
-      ] ??
-      iconUrlLocal ??
-      iconsWithNames["sedan1"];
-  }
-
+export const iconUrl = (VehicleStatus) => {
+  let iconUrl = "/assets/images/cars/";
   switch (VehicleStatus) {
     case 0:
-      iconUrlPass += VehicleStatus + ".png";
-      break;
     case 1:
-      iconUrlPass += VehicleStatus + ".png";
-      break;
     case 2:
-      iconUrlPass += VehicleStatus + ".png";
-      break;
-    case 5:
-      iconUrlPass += VehicleStatus + ".png";
-      break;
-    case 204:
-      iconUrlPass += VehicleStatus + ".png";
-      break;
     case 100:
-      iconUrlPass += VehicleStatus + ".png";
-      break;
     case 101:
-      iconUrlPass += VehicleStatus + ".png";
+      iconUrl += VehicleStatus + ".png";
+      // return <Car2 />;
       break;
     case 600:
-      iconUrlPass += VehicleStatus + ".png";
-      break;
-    case 500:
-      iconUrlPass += VehicleStatus + ".png";
+    case 5:
+      iconUrl += "5.png";
+      // return <Car4 />;
       break;
     default:
-      iconUrlPass += "201.png";
+      // return <Car7 />;
+
+      iconUrl += "201.png";
   }
-  return iconUrlPass;
+  // switch (Status) {
+  //   case "late":
+  //     iconUrl += "101.png";
+  //     break;
+  //   case "idle":
+  //     iconUrl += "5.png";
+  //     break;
+  //   case "noshow":
+  //     iconUrl += "201.png";
+  //     break;
+  //   case "started":
+  //     iconUrl += "1.png";
+  //     break;
+
+  //   default:
+  //     iconUrl += "0.png";
+  // }
+  return iconUrl;
+};
+
+export const colorStatus = (status) => {
+  let colorStatus = "";
+  switch (status) {
+    case "stopped":
+      colorStatus = "#c03221";
+      break;
+    case "waiting":
+      colorStatus = "orange";
+      break;
+    case "running":
+      colorStatus = "#1aa053";
+      break;
+    default:
+      colorStatus = "black";
+  }
+  return colorStatus;
 };
 export const VehicleOptions = (t) => {
   return [
@@ -453,25 +277,13 @@ export const VehicleOptions = (t) => {
       label: t ? `${t("bus_key")}` : "",
       name: "bus",
       value: "/assets/images/cars/car7/",
-      img: "/assets/images/cars/car7/1.png",
+      img: "/assets/images/cars/car6/1.png",
     },
     {
       label: t ? `${t("truck_key")}` : "",
       name: "truck",
       value: "/assets/images/cars/car8/",
-      img: "/assets/images/cars/car8/1.png",
-    },
-    {
-      label: t ? `${t("forklift_key")}` : "",
-      name: "forklift",
-      value: "/assets/images/cars/car9/",
-      img: "/assets/images/cars/car9/1.png",
-    },
-    {
-      label: t ? `${t("generator_key")}` : "",
-      name: "generator",
-      value: "/assets/images/cars/car10/",
-      img: "/assets/images/cars/car10/1.png",
+      img: "/assets/images/cars/car6/1.png",
     },
   ];
 };
@@ -492,46 +304,145 @@ export const getKey = (state) => {
     case 2:
       return "idling";
     case 5:
-      return "offline";
     case 600:
       return "offline";
     case 100:
       return "over_street_speed";
     case 101:
       return "over_speed";
-    case 204:
-      return "Sleeping_Mode";
-    case 500:
-      return "Not_Connected";
+    case 203:
     default:
       return "invalid_location";
   }
 };
 
-// export const syncMapWithTree = (myMap, treeData, vehChecked, VehFullData) => {
-//   const visibleNodes = [...treeData];
-//   const hiddenNodes = VehFullData?.filter(
-//     (full) =>
-//       !visibleNodes.find((visible) => visible.VehicleID == full.VehicleID)
-//   );
+export const fbtolocInfo = (_message, _initial = false) => {
+  let _USER_VEHICLES =
+    JSON.parse(localStorage.getItem(encryptName("user_vehicles"))) ?? [];
 
-//   visibleNodes.forEach((visVeh) => {
-//     const isChecked = vehChecked.find(
-//       (chckVeh) => chckVeh.VehicleID == visVeh.VehicleID
-//     );
+  const holdStatus = [600, 5, 0, 2];
+  const CalcMileage = (Mileage) => ((Mileage ?? 0) / 1000).toFixed(1);
+  const CalcDuration = (newInfo, oldInfo) =>
+    Math.abs(
+      new Date(newInfo.RecordDateTime) -
+      new Date(oldInfo.RecordDateTime ?? newInfo.RecordDateTime)
+    ); //in ms
 
-//     const pinned = myMap && myMap.isExist(visVeh?.VehicleID);
-//     if (!!isChecked && !pinned) {
-//       myMap && myMap.pin(visVeh);
-//     } else if ((!isChecked && pinned) || !isChecked) {
-//       myMap && myMap.unpin(visVeh?.VehicleID);
-//     }
-//   });
+  const CalcVehicleStatus = (newInfo) => {
+    if (isDateExpired(newInfo)) {
+      newInfo.VehicleStatus = 5;
+    } else if (newInfo.IsFuelCutOff == true || newInfo.IsFuelCutOff == 1) {
+      return 203;
+    } else if (newInfo.IsPowerCutOff) {
+      return 201;
+    } else if (newInfo.EngineStatus == 1 && newInfo.Speed <= 5) {
+      return 2;
+    } else if (newInfo.EngineStatus == 1 && newInfo.Speed > 120) {
+      return 101; //Vehicle is Over Speeding.
+    } else if (
+      newInfo.EngineStatus == 1 &&
+      newInfo.Speed < 120 &&
+      newInfo.Speed > 5
+    ) {
+      return 1;
+    } else if (newInfo.EngineStatus == 0 && newInfo.Speed > 0) {
+      return 300;
+    } else if (newInfo.EngineStatus == 0) {
+      return 0;
+    }
+    return 5;
+  };
+  const aggregate = (newInfo, oldInfo) => {
+    if (newInfo.DeviceTypeID === 1) {
+      newInfo.Mileage = parseFloat(oldInfo.Mileage ?? 0);
+      newInfo.Mileage += !holdStatus.includes(newInfo.VehicleStatus)
+        ? CalcDistance(newInfo, oldInfo)
+        : 0;
+      newInfo.Mileage = newInfo.Mileage.toFixed(1);
+    }
+    newInfo.VehicleStatus = CalcVehicleStatus(newInfo);
+    newInfo.Duration = CalcDuration(newInfo, oldInfo);
+    newInfo.Duration +=
+      newInfo.VehicleStatus == oldInfo.VehicleStatus &&
+        Number.isInteger(oldInfo.Duration)
+        ? oldInfo.Duration
+        : 0;
+    newInfo.WeightReading = WeightVoltToKG(newInfo, oldInfo);
 
-//   hiddenNodes?.forEach((hiddenVeh) => {
-//     myMap.unpin(hiddenVeh?.VehicleID);
-//   });
-// };
+    if (oldInfo != null) {
+      if (oldInfo.SyncAdd == undefined)
+        oldInfo.SyncAdd = Object.assign(
+          {},
+          {
+            Address: oldInfo.Address,
+            RecordDateTime: oldInfo.RecordDateTime,
+            Longitude: oldInfo.Longitude,
+            Latitude: oldInfo.Latitude,
+          }
+        );
+      let SyncAdd = oldInfo.SyncAdd;
+
+      if (!isValidAddress(newInfo.Address) && isValidAddress(SyncAdd.Address))
+        newInfo.Address = SyncAdd.Address;
+    } else {
+      getAddress(newInfo.SerialNumber, null);
+    }
+    return newInfo;
+  };
+  let _newInfo = _message.val();
+  if (_newInfo == null) return { locInfo: null, updated: false };
+
+  _newInfo.SerialNumber = _newInfo.SerialNumber ?? _newInfo.Serial;
+  _newInfo.RecordDateTime = Date2KSA(_newInfo.RecordDateTime);
+  _newInfo.Mileage = CalcMileage(_newInfo.Mileage);
+
+  if (isDateExpired(_newInfo)) _newInfo.VehicleStatus = 5;
+  delete _newInfo.Serial;
+  let _oldInfo = Object.assign(
+    {},
+    _USER_VEHICLES?.find((x) => x.SerialNumber == _newInfo.SerialNumber)
+  );
+  if (Object.keys(_oldInfo).length === 0) {
+    return { locInfo: _newInfo, updated: false };
+  }
+
+  if (
+    _oldInfo.Latitude > 0 &&
+    _newInfo.RecordDateTime != null &&
+    new Date(_newInfo.RecordDateTime) < new Date(_oldInfo.RecordDateTime)
+  )
+    return {
+      locInfo: _oldInfo,
+      updated: false,
+    };
+
+  _newInfo = aggregate(_newInfo, _oldInfo, _initial);
+
+  _oldInfo = Object.assign(_oldInfo, _newInfo); //_oldInfo = { ..._oldInfo, ...locInfo }; //join fix and updated data
+  return { locInfo: _oldInfo, updated: true };
+};
+
+export const syncMapWithTree = (myMap, treeData, VehFullData, vehChecked) => {
+  const visibleNodes = [...treeData];
+  const hiddenNodes = VehFullData?.filter(
+    (full) =>
+      !visibleNodes.find((visible) => visible.VehicleID == full.VehicleID)
+  );
+
+  visibleNodes.forEach((visVeh) => {
+    const isChecked = vehChecked.find(
+      (chckVeh) => chckVeh.VehicleID == visVeh.VehicleID
+    );
+    const pinned = myMap && myMap.isExist(visVeh?.VehicleID);
+    if (!!isChecked && !pinned) {
+      myMap && myMap.pin(visVeh);
+    } else if (!isChecked && pinned) myMap && myMap.unpin(visVeh?.VehicleID);
+  });
+
+  hiddenNodes?.forEach((hiddenVeh) => {
+    myMap.unpin(hiddenVeh?.VehicleID);
+  });
+};
 
 export const filterByNames = (t, data, inputValue) => {
   // Create a dynamic regex expression object with ignore case sensitivity
@@ -539,7 +450,7 @@ export const filterByNames = (t, data, inputValue) => {
   // clone the original data deeply
   // as we need to modify the array while iterating it
   const clonedData = _.cloneDeep(data);
-  const filteredMain = clonedData.filter((object) => {
+  const results = clonedData.filter((object) => {
     // use filter instead of some
     // to make sure all items are checked
     // first check object.list and then check object.name
@@ -555,14 +466,7 @@ export const filterByNames = (t, data, inputValue) => {
       }).length > 0 || re.test(t(object.name))
     );
   });
-  // filter subTitle reports to return only searched reports
-  const result = filteredMain.map((object) => {
-    const newObj = object.subTitle.filter((item) => {
-      return re.test(t(item.name));
-    });
-    return { ...object, subTitle: newObj };
-  });
-  return result;
+  return results;
 };
 
 export const filterBySerialNumber = (data, inputValue) => {
@@ -654,42 +558,104 @@ export const filterByAnyWordsTrak = (data, inputValue, nameKey) => {
   // const results1 = clonedData?.map((itemUp) => itemUp.children)
   return results;
 };
+/**
+  * @param data table data for getting headerName keys 
+ * @param router   param for not deleting _id from total users table (optional)
+ */
+export function handlingRowDataColumn(data, router) {
+  const rowData = data?.map((el) => {
+    const keys = Object.keys(el);
+
+    const handledObj = {};
+    keys.forEach((key) => {
+      if (key === "_id") {
+        if (router === "total users") {
+          handledObj[key] = el[key];
+        } else {
+          delete handledObj._id
+        }
+
+      } else if (key === "idNumber") {
+        delete handledObj.idNumber;
+      } else if (key === "custodyId") {
+        delete handledObj.custodyId;
+      } else if (key === "firstRecordDateTime") {
+        delete handledObj.firstRecordDateTime;
+      } else if (key === "phoneNumber") {
+        delete handledObj.phoneNumber;
+      } else if (key === "SerialNumber") {
+        delete handledObj.SerialNumber;
+      } else if (key === "PlateNumber") {
+        delete handledObj.PlateNumber;
+      } else if (key === "vid") {
+        delete handledObj.vid;
+      } else if (key === "VehicleID") {
+        delete handledObj.VehicleID;
+      } else if (key === "GroupID") {
+        delete handledObj.GroupID;
+      } else if (typeof el[key] !== "object" && el[key]) {
+        handledObj[key] = el[key];
+      } else if (el[key] === 0) {
+        handledObj[key] = el[key];
+      } else if (!el[key]) {
+        handledObj[key] = "N/A";
+      }
+    });
+
+    return handledObj;
+  });
+  return rowData;
+}
 
 // Transforms object key and returns a new array with the new Key
 export const changeRowDataKeys = (data) => {
   const newArr = data.map((obj) => {
     const newObj = {};
+    const allKeys = [
+      "SPEED COUNT",
+      "BRAKE COUNT",
+      "ACCEL COUNT",
+      "SEAT BCOUNT",
+      "NIGHTDRIVE COUNT",
+      "FATIG COUNT",
+      "DRIFT COUNT",
+      "TEMPR COUNT",
+      "SPEED POINTS",
+      "BRAKE POINTS",
+      "ACCEL POINTS",
+      "SEAT BPOINTS",
+      "NIGHTDRIVE POINTS",
+      "FATIG POINTS",
+      "DRIFT POINTS",
+      "TEMPR POINTS",
+      "DATE",
+      "START COORDINATES",
+      "END COORDINATES",
+      "VEHICLE ID",
+      "MOBILE",
+      "PARENT MOBILE",
+      "MAX SPEED",
+      "DURATION",
+      "RISK LEVEL",
+      "STUDENT TYPE",
+      "TOTAL VIOLATION POINTS",
+      "SERIAL NUMBER",
+      "PLATE NUMBER"
+    ];
     //You have to add a condition on the Object key name and perform your actions
-    Object.keys(obj).forEach((key) => {
-      if (key === "RecordDateTime") {
-        delete newObj.RecordDateTime;
-      } else if (key === "SyncAdd") {
-        delete newObj.SyncAdd;
-      } else if (key === "Speed") {
-        newObj[key] = obj[key].toString();
-      } else if (key === "EngineStatus") {
-        newObj[key] = obj[key] ? "On" : "Off";
-      } else if (key === "VehicleStatus") {
-        newObj[key] = GetStatusString(obj[key]);
-      } else if (obj[key] === null || !obj[key]) {
+    allKeys.forEach((key) => {
+      if (obj[key] === null || !obj[key]) {
         newObj[key] = "N/A";
       } else {
         newObj[key] = obj[key];
       }
     });
-    let keys = [];
-    Object.keys(newObj).forEach((key) => {
-      keys.push(key);
-    });
 
-    return newObj;
+    return { ...obj, ...newObj };
   });
   return newArr;
 };
-
 import fileSaver from "file-saver";
-import { object } from "yup";
-
 export function convertJsonToExcel(
   data = {},
   fileName = "",
@@ -766,12 +732,11 @@ export function convertJsonToExcel(
   // Save the file using file-saver
   fileSaver.saveAs(wbBlob, `${fileName}.xlsx`);
 }
-
 export function exportToCsv(
   filename,
-  rows
-  // colorHeader = "246C66",
-  // colorRow = "babfc7"
+  rows,
+  colorHeader = "246C66",
+  colorRow = "babfc7"
 ) {
   if (!rows || !rows.length) {
     return;
@@ -930,10 +895,16 @@ export const fetchLoginAction = async () => {
   }
 };
 
-export const fetchData = async (setLoading, setData_table, api) => {
+export const fetchData = async (token, setLoading, setData_table, api) => {
+  let myToken = token.toString();
   setLoading(true);
   await axios
-    .get(api)
+    .get(api, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${myToken}`,
+      },
+    })
     .then((response) => {
       if (response.status === 200) {
         const result = response.data;
@@ -947,15 +918,23 @@ export const fetchData = async (setLoading, setData_table, api) => {
 };
 
 export const postData = async (
+  token,
   data,
   toast,
   setLoading,
   // path,
   api
 ) => {
+  let myToken = token.toString();
   setLoading(true);
   await axios
-    .post(api, data)
+    .post(api, data, {
+      // method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${myToken}`,
+      },
+    })
     .then((res) => {
       if (res.status === 201) {
         toast.success("Driver Add Successfully.");
@@ -1023,143 +1002,35 @@ export const updateDriver = (setOpenUpdate, setDriverID, id) => {
   setDriverID(id);
 };
 
-// unused for now
-export const handleStorageData = (item) => {
-  return {
-    AccountID: item.AccountID,
-    VehicleID: item.VehicleID,
-    SerialNumber: item.SerialNumber,
-    Serial: item.Serial,
-    WorkingHours: item.WorkingHours,
-    HeadWeight: item.HeadWeight,
-    TailWeight: item.TailWeight,
-    TotalWeight: item.TotalWeight,
-    MinVolt: item.MinVolt,
-    MaxVolt: item.MaxVolt,
-    HasSensor: item.HasSensor,
-    Duration: item.Duration,
-    WeightReading: item.WeightReading,
-    Address: item.Address,
-    RecordDateTime: item.RecordDateTime,
-    Latitude: item.Latitude,
-    Longitude: item.Longitude,
-    Direction: item.Direction,
-    Speed: item.Speed,
-    EngineStatus: item.EngineStatus,
-    IgnitionStatus: item.IgnitionStatus,
-    VehicleStatus: item.VehicleStatus,
-    Mileage: item.Mileage,
-    DoorStatus: item.DoorStatus,
-    IsValidRecord: item.IsValidRecord,
-    RemainingFuel: item.RemainingFuel,
-    StoppedTime: item.StoppedTime,
-    StreetSpeed: item.StreetSpeed,
-    WeightVolt: item.WeightVolt,
-    EngineTotalRunTime: item.EngineTotalRunTime,
-    RPM: item.RPM,
-    AccelPedalPosition: item.AccelPedalPosition,
-    MileageMeter: item.MileageMeter,
-    TotalMileage: item.TotalMileage,
-    FuelLevelPer: item.FuelLevelPer,
-    InstantFuelConsum: item.InstantFuelConsum,
-    TotalFuelConsum: item.TotalFuelConsum,
-    CoolantTemp: item.CoolantTemp,
-    Battery1: item.Battery1,
-    Battery2: item.Battery2,
-    Battery3: item.Battery3,
-    Battery4: item.Battery4,
-    Hum1: item.Hum1,
-    Hum2: item.Hum2,
-    Hum3: item.Hum3,
-    Hum4: item.Hum4,
-    Temp1: item.Temp1,
-    Temp2: item.Temp2,
-    Temp3: item.Temp3,
-    Temp4: item.Temp4,
-    imei: item.imei,
-    SimSerialNumber: item.SimSerialNumber,
-    DeviceTypeID: item.DeviceTypeID,
-    PlateNumber: item.PlateNumber,
-    DisplayName: item.DisplayName,
-    SpeedLimit: item.SpeedLimit,
-    FireBaseLiveDB: item.FireBaseLiveDB,
-    DriverID: item.DriverID,
-    // DriverName: item.DriverName,
-    // GroupID: item.GroupID,
-    // GroupName: item.GroupName,
-    // configJson: item.configJson,
-    // _id: item._id,
-    // StatusCode: item.StatusCode,
-    // AlarmCode: item.AlarmCode,
-    // Distance: item.Distance,
-    // UpdateSetting: item.UpdateSetting,
-    // TripStatus: item.TripStatus,
-    // IdleStatus: item.IdleStatus,
-    // IngestionDate: item.IngestionDate,
-    // HarshAcceleration: item.HarshAcceleration,
-    // HarshBreaking: item.HarshBreaking,
-    // IsOverSpeed: item.IsOverSpeed,
-    // IsFuelCutOff: item.IsFuelCutOff,
-    // IsPowerCutOff: item.IsPowerCutOff,
-    // IsLowPower: item.IsLowPower,
-    // IsPowerFromBettary: item.IsPowerFromBettary,
-    // IsSOSHighJack: item.IsSOSHighJack,
-    // EventType: item.EventType,
-    // IdleTime: item.IdleTime,
-    // BatteryVoltage: item.BatteryVoltage,
-    // SeatBeltStatus: item.SeatBeltStatus,
-    // SeatBelt: item.SeatBelt,
-    // SleepStatus: item.SleepStatus,
-    // Temp: item.Temp,
-    // IsCrash: item.IsCrash,
-    // WeightSensorReading: item.WeightSensorReading,
-    // ActualWeight: item.ActualWeight,
-    // CargoWeight: item.CargoWeight,
-  };
-};
-/**
- * @param data[]
- * @desc to get all vehs if it has children || nested children
- */
-export const getAllVehs = (data) => {
-  let vehs = [];
-  data.forEach((obj) => {
-    if (obj.VehicleID !== undefined) {
-      vehs.push(obj);
-    } else {
-      vehs = [...vehs, ...getAllVehs(obj.children)];
+export const fetchAllIncentiveHistory = async (
+  traineeID,
+  token,
+  setInsentiveHistoryData,
+  setInsentiveLoading
+) => {
+  try {
+    let myToken = token.toString();
+    setInsentiveLoading(true)
+
+    const res = await axios
+      .get(`/incentive/getIncentiveHistory/${traineeID}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${myToken}`,
+        },
+      })
+    const insetiveData = res?.data.history
+
+    if (res.status === 200) {
+      setInsentiveHistoryData(insetiveData)
+      setInsentiveLoading(false)
     }
-  });
-  return vehs;
-};
-/**
- * @param event file which uploaded
- * @param setErrorState to handle error message
- * @param t  translation key
- * @desc this function to handle image size and extension
- */
-export const FileImageDimensionsHandler = (event, setErrorState, t) => {
-  const file = event.target.files[0];
-  const imgExtensions = ["png", "jpg", "jpeg"];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const fileExtension = file.name.split(".").pop().toLowerCase();
-        const fileSizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-        if (!imgExtensions.includes(fileExtension)) {
-          setErrorState(t("image extension must be Jpg or jpeg or png"));
-        } else if (fileSizeInMB > 5) {
-          setErrorState(
-            t("Please make sure that the image size is not larger than 5 MB.")
-          );
-        } else {
-          setErrorState(null);
-        }
-      };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
+
+  } catch (error) {
+    console.log(error);
   }
 };
+
+
+
+

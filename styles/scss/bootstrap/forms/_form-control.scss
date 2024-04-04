@@ -197,9 +197,7 @@ textarea {
   }
 }
 // stylelint-enable selector-no-qualifying-type
-input[type="date"].ag-input-field-input.ag-text-field-input{
-  letter-spacing: 2px;
-}
+
 .form-control-color {
   width: $form-color-width;
   height: auto; // Override fixed browser height
@@ -217,21 +215,5 @@ input[type="date"].ag-input-field-input.ag-text-field-input{
   &::-webkit-color-swatch {
     height: if(unit($input-line-height) == "", $input-line-height * 1em, $input-line-height);
     @include border-radius($input-border-radius);
-  }
-}
-
-//date input change
-@import url('https://fonts.googleapis.com/css2?family=Signika&display=swap');
-.date_input {
-  font-family: 'Signika', sans-serif;
-  font-style: italic;
-  font-size: 14px;
-  &_dark{
-    font-family: 'Signika', sans-serif;
-    font-style: italic;
-    font-size: 14px;
-    &::-webkit-calendar-picker-indicator {
-      filter: invert(100%);
-      }
   }
 }

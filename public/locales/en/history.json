@@ -5,13 +5,6 @@
   "Address": "Address",
   "Mileage": "Mileage",
   "Close": "Close",
-  "Select a valid date": "Select a valid date",
-  "This Week": "This Week",
-  "Last Week": "Last Week",
-  "This Month": "This Month",
-  "Last Month": "Last Month",
-  "All_Steps": "All Steps",
-  "All_Locations": "All Locations",
   "from": "from",
   "to": "to",
   "first": "first",
@@ -71,10 +64,6 @@
   "show_graphs_key": "Show graphs",
   "view_landmarks_key": "View landmarks",
   "view_geofences_key": "View geofences",
-  "Select_a_valid_date": "Select a valid date",
-  "Get_Steps": "Get steps",
   "please_select_a_valid_date_key": "Please select a valid date",
-  "days up to today": "days up to today",
-  "Geofences_Are_Displayed!": "Geofences Are Displayed!",
-  "There_is_no_GeoFences_Right_Now": "There is no GeoFences Right Now"
+  "view_heat_map_vehicle_key": "View Heat Map Vehicle"
 }

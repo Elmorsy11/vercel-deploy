@@ -1,5 +1,6 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import React from "react";
 import Image from "next/image";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 const PageNotFound = () => {
   return (

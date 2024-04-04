@@ -1,4 +1,4 @@
-$navWidth: 23.125rem;
+$navWidth: 21.875rem;
 $hamburgerSize: 2.5rem;
 $color: #fff;
 $color__patty: #151824;
@@ -35,11 +35,11 @@ $color__secondary: #575b67;
   justify-content: flex-start;
   opacity: 0.9;
   top: 0;
-  // overflow-y: scroll;
+
   right: 0;
   margin: 1rem;
   padding: 1rem;
-  width: $navWidth !important;
+  width: $navWidth;
   height: 80vh !important;
   // height: calc(100% - 2rem);
   //   height: 80vh;
@@ -149,7 +149,7 @@ $color__secondary: #575b67;
   border-radius: 1.25rem;
   cursor: pointer;
   position: absolute;
-  z-index: 9996;
+  z-index: 1001;
   top: 1rem;
   right: 1rem;
   background: $color;
@@ -278,8 +278,4 @@ $color__secondary: #575b67;
   left: 1rem;
   right: auto;
   z-index: 1002;
-}
-
-.dropDownItem {
-  z-index: 100;
 }

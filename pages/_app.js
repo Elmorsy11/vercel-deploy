@@ -1,7 +1,8 @@
+import "../helpers/plugins/fullscreen/Control.FullScreen.css";
 import "../styles/globals.scss";
 import store from "../lib";
 import { Provider } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Script from "next/script";
 import Router from "next/router";
 import SSRProvider from "react-bootstrap/SSRProvider";
@@ -10,22 +11,44 @@ import { appWithTranslation } from "next-i18next";
 import { ThemeProvider } from "react-bootstrap";
 import AuthGuard from "../components/authGuard";
 import { GTMPageView } from "../utils/gtm.ts";
+import { library } from "@fortawesome/fontawesome-svg-core";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-
-import "../helpers/plugins/fullscreen/Control.FullScreen.css";
-import "../helpers/plugins/markercluster/MarkerCluster.css";
-import "../helpers/plugins/markercluster/MarkerCluster.Default.css";
-import "rsuite/dist/rsuite.min.css";
-import "../styles/scss/custom/plugins/Resizebox.css";
 import { ToastContainer } from "react-toastify";
-import { useSession } from "next-auth/client";
+import "../styles/app.css";
+import "rsuite/dist/rsuite.min.css";
+import Chart from "chart.js/auto";
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css";
 
-import TagManager from "react-gtm-module";
+import {
+  faCheckSquare,
+  faChevronDown,
+  faChevronRight,
+  faFile,
+  faFolder,
+  faFolderOpen,
+  faMinusSquare,
+  faPlusSquare,
+  faSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import TraineesContext from "context/TraineesContext";
+
+library.add(
+  faCheckSquare,
+  faSquare,
+  faChevronRight,
+  faChevronDown,
+  faPlusSquare,
+  faMinusSquare,
+  faFolder,
+  faFolderOpen,
+  faFile
+);
 
 function MyApp({ Component, pageProps }) {
   const [, setLoading] = useState(false);
-  const [session] = useSession();
-  const settBtnRef = useRef();
+  const [selectedLabel, setSelectedLabel] = useState(null);
+  const [breadcrumbs, setBreadcrumbs] = useState(["Home"]);
 
   useEffect(() => {
     const handleStart = (url) => {
@@ -51,28 +74,9 @@ function MyApp({ Component, pageProps }) {
     const handleRouteChange = (url) => GTMPageView(url);
     Router.events.on("routeChangeComplete", handleRouteChange);
 
-    const gtmDataLayer = {
-      userId: session?.user?.user?.id ?? "Guest",
-      userProject: "FMS",
-      page: "index",
-    };
-    const gtmArgs = {
-      gtmId: "GTM-5CZKSQH",
-      dataLayer: gtmDataLayer,
-      dataLayerName: "PageDataLayer",
-      auth: "11BzXoFtHApa1UPqFsboNQ",
-      preview: "env-1",
-    };
-    TagManager.initialize(gtmArgs);
-
     return () => {
       Router.events.off("routeChangeComplete", handleRouteChange);
-      // Router.events.off("routeChangeStart", handleStart);
       Router.events.off("routeChangeComplete", handleComplete);
-      // Router.events.off("routeChangeError", handleComplete);
-
-      // window.removeEventListener("resize", setSize);
-      // window.removeEventListener("orientationchange", setSize);
     };
   }, []);
 
@@ -82,48 +86,47 @@ function MyApp({ Component, pageProps }) {
         <Provider store={store}>
           Main development
           <NextNprogress
-            color="#246c66"
+            color="#3668E9"
             startPosition={0.3}
             stopDelayMs={200}
             height={3}
             showOnShallow={true}
           />
-          <Script id="google-analytics" strategy="afterInteractive" defer>
-            {`
-         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','GTM-PDQ89V3');
-        `}
-          </Script>
           <Script
+            async
             defer
-            src="https://www.google-analytics.com/analytics.js"
-            strategy="afterInteractive"
-          />
-          <Script
-            defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-qWPc8xQrA-D8TSiNBpjLYBBsS29oU0U&callback=Function.prototype"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC-qWPc8xQrA-D8TSiNBpjLYBBsS29oU0U"
           ></Script>
+          <TraineesContext>
+            <AuthGuard
+              selectedLabel={selectedLabel}
+              setSelectedLabel={setSelectedLabel}
+              breadcrumbs={breadcrumbs}
+              setBreadcrumbs={setBreadcrumbs}
+            >
+              <ToastContainer
+                position="top-center"
+                autoClose={4000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              />
 
-          <AuthGuard settBtnRef={settBtnRef}>
-            <ToastContainer
-              position="top-center"
-              autoClose={4000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
-            <Component {...pageProps} settBtnRef={settBtnRef} />
-            {/* {process.env.NODE_ENV === "production" && (
-              <div id="development">{`You may find some mistakes because it's still under development`}</div>
-            )} */}
-          </AuthGuard>
+              <Component
+                {...pageProps}
+                selectedLabel={selectedLabel}
+                setSelectedLabel={setSelectedLabel}
+                breadcrumbs={breadcrumbs}
+                setBreadcrumbs={setBreadcrumbs}
+              />
+
+            </AuthGuard>
+          </TraineesContext>
         </Provider>
+
       </SSRProvider>
     </ThemeProvider>
   );

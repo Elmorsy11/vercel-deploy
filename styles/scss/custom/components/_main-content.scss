@@ -1,9 +1,10 @@
 .content-inner {
-  padding: 0px;
-}
-
-@include media-breakpoint-down(md) {
-  .content-inner {
     padding: 0px;
   }
-}
+  
+  @include media-breakpoint-down(md) {
+    .content-inner {
+      padding: 0px;
+    }
+  }
+  

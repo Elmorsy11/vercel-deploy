@@ -1,0 +1,19 @@
+{
+    "Name": "Name",
+    "Phone Number": "Phone Number",
+    "Email": "Email",
+    "User Role": "User Role",
+    "Export": "Export",
+    "ID": "ID",
+    "serial number": "serial number",
+    "vehicles_key": "Vehicles",
+    "Price": "Price",
+    "Start Date": "Start Date",
+    "End Date": "End Date",
+    "Details": "Details",
+    "Status": "Status",
+    "users_key": "Users",
+    "Add_Vehicle": "Add Vehicle",
+    "Add_User": "Add User",
+    "upload_image_key" : "Upload Image"
+}
