@@ -25,7 +25,7 @@ export function CustomInput({
         value={value}
         onChange={handleChange}
         type={Type}
-        placeholder={Placeholder ?? Label}
+        placeholder={Placeholder || Label}
         disabled={disabled}
         required={required}
         min={min}
@@ -34,7 +34,7 @@ export function CustomInput({
         onKeyDown={onKeyDown}
       />
       <Form.Control.Feedback type="invalid">
-        {feedBack ? feedBack : `${Label} is required`}
+        {Label} is required
       </Form.Control.Feedback>
     </Form.Group>
   );

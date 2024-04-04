@@ -1,176 +1,138 @@
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { locConfigModel } from "helpers/helpers";
-import { addFullVehData } from "lib/slices/StreamData";
+import { useSelector, useDispatch } from "react-redux";
+import { initializeApp } from "firebase/app";
+import { getDatabase, onValue, ref } from "firebase/database";
+import configUrls from "config/config";
+import { locConfigModel, Date2KSA } from "helpers/helpers";
+import StreamHelper from "helpers/streamHelper";
+import {
+  addFullVehData,
+  countVehTotal,
+  UpdateVehicle,
+} from "lib/slices/StreamData";
 import { encryptName } from "helpers/encryptions";
 import { useSession } from "next-auth/client";
-import moment from "moment";
-import { useState } from "react";
-
-function useStreamDataState(VehFullData) {
-  const [loading, setLoading] = useState(false);
+function useStreamDataState() {
   // useDispatch to update the global state
   const dispatch = useDispatch();
   const [session] = useSession();
-  const userData = JSON.parse(
-    localStorage.getItem(encryptName("userData")) ?? "{}"
-  );
 
-  let updatedDataObj = VehFullData
-    ? Object.fromEntries(VehFullData.map((x) => [x.SerialNumber, x]))
-    : {};
+  const firebaseConfig = {
+    databaseURL: configUrls.firebase_config.databaseURL,
+  };
+  let fbSubscribers = [];
+  // get global state
+  const VehFullData = useSelector((state) => state.streamData.VehFullData);
 
-  const apiGetVehicles = async (localExpireMin = 30, syncBtn = false) => {
-    let vehStorage = {};
-    let updated = false;
+  // update Global state
+  const apiLoadVehSettings = async () => {
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwidXNlcklkIjoiNjQwZGI0ODk2MDlkMWNkMjA5ZjJmODQxIiwicm9sZSI6ImFkbWluIiwiY3VzdG9keUlkIjpudWxsLCJpYXQiOjE2ODEyMDcyNDZ9.QFp9j-cCuOs-fSi7EyMmDJhHtIyWq-0Br7gMqM5Y3W8";
+    const response = await axios.get(
+      `https://itc-api-hcr64pytia-uc.a.run.app/api/v1/user/getAllTrainers`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    vehStorage = userData["userId"] == session?.user.id ? userData : {};
-    if (!localStorage.getItem(encryptName("updatedStorage"))) {
-      localStorage.clear();
-      vehStorage = {};
+    if (response.status === 200 && response.data?.length > 0) {
+      let result = response.data.filter((v) => v.SerialNumber !== null);
+
+      result = result.map((x) => {
+        var config = Object.assign({}, locConfigModel);
+        Object.assign(config, x);
+        config.MinVoltage = locConfigModel.MinVolt;
+        config.MaxVoltage = locConfigModel.MaxVolt;
+        config.RecordDateTime = Date2KSA(config.RecordDateTime);
+        return Object.assign(x, config);
+      });
+      return result;
     }
+    return [];
+  };
 
-    if (syncBtn) {
-      localStorage.removeItem(encryptName("userData"));
-      vehStorage = {};
-    }
-
-    const isStorageExpired =
-      (new Date(vehStorage?.updateTime) ?? new Date(0)) <
-      new Date(new Date().setMinutes(new Date().getMinutes() - localExpireMin));
-    if (!vehStorage?.vehData?.length || isStorageExpired) {
-      let apiData = [];
-      apiData = await apiLoadVehSettings(true, syncBtn); //load full data
-
-      apiData = Object.fromEntries(apiData.map((x) => [x?.SerialNumber, x]));
-
-      updatedDataObj = { ...updatedDataObj, ...apiData };
-
-      dispatch(addFullVehData([...Object.values(updatedDataObj)]));
-      updated = true;
-    } else {
-      updatedDataObj = Object.fromEntries(
-        vehStorage?.vehData?.map((x) => [x?.SerialNumber, x])
+  const FbSubscribe = async (vehicles, myMap, onlyOnce = false) => {
+    const { fbtolocInfo } = StreamHelper();
+    const subid = fbSubscribers.push({ cancel: false }) - 1;
+    const App = initializeApp(firebaseConfig, "updatefb");
+    const db = getDatabase(App);
+    var ids = vehicles?.map((i) => i?.SerialNumber);
+    await ids?.forEach((id) => {
+      onValue(
+        ref(db, id),
+        (snapshot) => {
+          if (!snapshot.hasChildren()) return;
+          if (fbSubscribers[subid].cancel) return;
+          const { locInfo, updated } = fbtolocInfo(snapshot, vehicles);
+          if (updated) {
+            dispatch(UpdateVehicle(locInfo));
+            dispatch(countVehTotal());
+            myMap && myMap?.UpdateMarker(locInfo);
+          }
+          snapshot.exists();
+        },
+        (error) => {
+          console.error("error : ", error);
+        },
+        { onlyOnce: onlyOnce }
       );
-      dispatch(addFullVehData([...Object.values(updatedDataObj)]));
+    });
+    await ids?.forEach((id) => {
+      onValue(ref(db, id), (snapshot) => {});
+    });
+  };
+
+  const apiGetVehicles = async (localExpireMin = 30) => {
+    let vehState = [];
+    let vehStorage = {};
+    let updatedResult = [];
+    let updated = false;
+    vehState = [...VehFullData];
+    if (vehState.length == 0) {
+      const UserData = JSON.parse(
+        localStorage.getItem(encryptName("UserData")) ?? "{}"
+      );
+      vehStorage =
+        UserData["userId"] != session?.user?.user?.id ? {} : UserData;
+      const isStorageExpired =
+        (new Date(vehStorage?.updateTime) ?? new Date(0)) <
+        new Date(
+          new Date().setMinutes(new Date().getMinutes() - localExpireMin)
+        );
+      if (
+        JSON.stringify(vehStorage?.vehData ?? {}) == "{}" ||
+        isStorageExpired
+      ) {
+        updatedResult = await apiLoadVehSettings(); //load full data
+        updated = updatedResult.length > 0;
+      } else {
+        updatedResult = vehStorage.vehData;
+      }
+      dispatch(addFullVehData([...updatedResult]));
+    } else {
+      updatedResult = vehState;
     }
 
-    let udo = Object.values(updatedDataObj);
-
-    if (updated) {
-      udo =
-        udo.length < 4000
-          ? udo
-          : udo.map((x) => {
-              return {
-                VehicleID: x.VehicleID,
-                SerialNumber: x.SerialNumber,
-                DriverID: x.DriverID,
-                DisplayName: x.DisplayName,
-                PlateNumber: x.PlateNumber,
-                GroupName: x.GroupName,
-                DriverName: x.DriverName,
-                GroupID: x.GroupID,
-                EngineStatus: x.EngineStatus,
-                RecordDateTime: moment.utc(x.RecordDateTime),
-                Latitude: x.Latitude,
-                Longitude: x.Longitude,
-                Speed: x.Speed ?? 0,
-                SpeedLimit: x.SpeedLimit,
-                lastTrips: x.lastTrips,
-                GroupID: x.GroupID,
-              };
-            });
-
+    if (updated)
       localStorage.setItem(
-        encryptName("userData"),
+        encryptName("UserData"),
         JSON.stringify({
-          userId: session?.user.id,
+          userId: session?.user?.user?.id,
           updateTime: new Date(),
-          vehData: udo,
+          vehData: updatedResult,
         })
       );
-      localStorage.setItem(encryptName("updatedStorage"), true);
-    }
 
-    return {
-      updatedResult: udo,
-    };
+    return { updated, updatedResult, vehStorage };
   };
-
-  const apiLoadVehSettings = async (withLoc = true) => {
-    setLoading(true);
-
-    try {
-      const res = await axios.get(
-        `vehicles/settings?withloc=${withLoc ? 1 : 0}`
-      );
-
-      let result =
-        res.data?.map((x) => {
-          return {
-            ...x,
-            WorkingHours: x?.WorkingHours || 0,
-            SpeedLimit: (x?.SpeedLimit ?? 0) > 0 ? x?.SpeedLimit : 120,
-            MinVolt: x?.MinVolt ?? 0,
-            MaxVolt: x?.MaxVolt ?? 0,
-            RecordDateTime: moment.utc(
-              x.RecordDateTime || locConfigModel.RecordDateTime
-            ),
-            Speed: x.Speed ?? 0,
-            SerialNumber: x?.SerialNumber
-              ? x?.SerialNumber
-              : `NoSerial_${Math.floor(Math.random() * 100000)}`,
-          };
-        }) || [];
-
-      // Get an array of vehicle IDs from the result
-      const vehicleSerial = result.map((vehicle) => vehicle.VehicleID);
-
-      const getLastTrip = async (vehicleSerialArray) => {
-        const data = {
-          // lite: 1,
-          vids: vehicleSerialArray,
-        };
-        try {
-          const response = await axios.post(`vehicles/lastTrip`, data);
-          return response.data.lastTrips;
-        } catch (error) {
-          return [];
-        }
-      };
-
-      const setLastTrip = async () => {
-        const lastTrips = await getLastTrip(vehicleSerial);
-        const lastTripsMap = {};
-        lastTrips.forEach((trip) => {
-          lastTripsMap[trip._id] = trip.lastTrip;
-        });
-        return lastTripsMap;
-      };
-
-      const lastTripsMap = await setLastTrip();
-      result.forEach((vehicle) => {
-        vehicle.lastTrips =
-          moment
-            .utc(lastTripsMap[vehicle.VehicleID])
-            .local()
-            .format("YYYY-MM-DD HH:mm:ss") || null;
-      });
-      setLoading(false);
-      return result;
-    } catch (error) {
-      setLoading(false);
-      return [];
-    }
+  const trackStreamLoader = async (myMap) => {
+    const { updatedResult } = await apiGetVehicles(30);
+    await dispatch(countVehTotal());
+    await FbSubscribe(updatedResult, myMap);
   };
-
-  const trackStreamLoader = async (syncBtn) => {
-    await apiGetVehicles(30, syncBtn);
-  };
-
   return {
-    loading,
     trackStreamLoader,
   };
 }

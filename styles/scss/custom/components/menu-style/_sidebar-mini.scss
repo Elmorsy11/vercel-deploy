@@ -116,6 +116,12 @@
     }
 }
 
+.sidebar-mini {
+    .side-bar-icon {
+        margin-left: -20px;
+    }
+}
+
 @include media-breakpoint-down(xl) {
     .sidebar {
         &.sidebar-default.sidebar-mini+.main-content{

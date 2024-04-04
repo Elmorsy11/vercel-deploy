@@ -1,274 +1,262 @@
-import { useEffect, useState } from "react";
-import { Card, Col, Row } from "react-bootstrap";
-import Joyride from "react-joyride";
-import axios from "axios";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { getSession } from "next-auth/client";
-import style from "styles/scss/custom/components/tour-step/tourStep.module.scss";
-
-const Google = dynamic(() => import("components/dashboard/google"), {
-  ssr: false,
-});
-
-import Progress from "components/dashboard/Progress/index";
-
-// Chart Components
-import AverageUtilizationChart from "components/dashboard/Charts/AverageUtilizationChart";
-import AllViolationsChart from "components/dashboard/Charts/AllViolationsChart";
-
-import VehiclesStatusChart from "components/dashboard/Charts/VehiclesStatusChart";
-import AverageSpeedAndDistanceChart from "components/dashboard/Charts/AverageSpeedAndDistanceChart";
-import OverallPreventiveMaintenance from "components/dashboard/Charts/OverallPreventiveMaintenance";
-
-// import NextrepairplansTable
-import NextrepairplansTable from "components/dashboard/NextrepairplansTable";
-
-// import CardsForRates
-import CardsForRates from "components/dashboard/CardsForRates";
-import { useDispatch, useSelector } from "react-redux";
-import useStreamDataState from "hooks/useStreamDataState";
-import dynamic from "next/dynamic";
-import { updateStRunning } from "lib/slices/StreamData";
 import { useSession } from "next-auth/client";
-import useStepDashboard from "../hooks/useStepDashboard";
-import TagManager from "react-gtm-module";
-import { handleJoyrideCallback } from "lib/slices/tour";
-import { useTranslation } from "next-i18next";
-import usefetchHomeData from "hooks/usefetchHomeData";
-import { VehicleProvider } from "context/VehiclesContext";
-import ParkingGroupsChart from "components/dashboard/Charts/ParkingGroupsChart";
+import { useEffect, useMemo, useState } from "react";
 
-const Home = () => {
-  const tourState = useSelector((state) => state.tour.run);
-  const dashboardSteps = useStepDashboard();
-  const [{ steps }, setState] = useState({
-    steps: dashboardSteps["dashboard"],
-  });
+/*___________ Components _____________*/
+import DashboardHeader from "components/dashboard/DashboardHeader";
+import DashboardTotalNumbers from "components/dashboard/DashboardTotalNumbers";
+import DashboardViolations from "components/dashboard/DashboardViolations";
 
-  const {
-    speedChartData,
-    speedChartDataLoading,
-    preventiveChartData,
-    preventiveChartDataLoading,
-    averageUtilizationChart,
-    averageUtilizationChartLoading,
-    DashboardData,
-  } = usefetchHomeData();
+/*___________ Style _____________*/
+import "react-date-range/dist/styles.css"; // main css file
+import "react-date-range/dist/theme/default.css"; // theme css file
+import { useRouter } from "next/router";
+import DashboardWeeklyTrends from "components/dashboard/DashboardWeeklyTrends";
+import { useDispatch, useSelector } from "react-redux";
+import AgGridDT from "components/AgGridDT";
+import { allTrainees, clearCustodyDetails } from "lib/slices/custodies";
+import { Breadcrumb, Spinner } from "react-bootstrap";
+import {
+  TotalUsers,
+  changeItdItc,
+  dashboardInfo,
+  topDrivers,
+  violationsReport,
+  weeklyTrendsChart,
+} from "lib/slices/dashboardSlice";
+import { useTrainees } from "context/TraineesContext";
+import { resetFilteredData, setFilteredItcLabel } from "lib/slices/filterMaindashboardSlice";
+import { cancelledViolations } from "lib/slices/cancelledViolationsSlice";
+import { dashboardSheets } from "lib/slices/violationsSheetsSlice";
 
-  const [session] = useSession();
+const Home = ({ selectedLabel, setSelectedLabel, breadcrumbs, setBreadcrumbs }) => {
 
-  const gtmDataLayer = {
-    userId: session?.user?.user?.id ?? "Guest",
-    userProject: "FMS",
-    page: "index",
-  };
-  const gtmArgs = {
-    dataLayer: gtmDataLayer,
-    dataLayerName: "PageDataLayer",
-  };
+  const { loading, trainees, setTrainees } = useTrainees();
 
-  TagManager.dataLayer(gtmArgs);
+  const [gridApi, setGridApi] = useState(null);
+
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
+  const [session] = useSession()
+  const router = useRouter();
 
-  const [allViolationChart, setAllViolationChart] = useState([]);
-  const [allViolationLoading, setAllViolationLoading] = useState(false);
-  const [parkingGroupChart, setParkingGroupChart] = useState([]);
-  const [parkingGroupLoading, setParkingGroupLoading] = useState(false);
-
-  const { t } = useTranslation("Tour");
-  const { VehTotal, running } = useSelector((state) => state.streamData);
-
-  const { myMap } = useSelector((state) => state.mainMap);
-  const { darkMode } = useSelector((state) => state.config);
-
-  const { trackStreamLoader } = useStreamDataState();
-
-  const fetchAllViolationData = async () => {
-    setAllViolationLoading(true);
-    try {
-      const respond = await axios.get(
-        `dashboard/mainDashboard/averageViolations`
-      );
-      setAllViolationChart(respond?.data?.AverageViolationCount);
-
-      setAllViolationLoading(false);
-    } catch (error) {
-      setAllViolationLoading(false);
-    }
-    // return true;
-  };
-  const fetchParkingGroupsData = async () => {
-    setAllViolationLoading(true);
-    try {
-      const respond = await axios.get(
-        `dashboard/management/parking/vehiclesCount`
-      );
-      setParkingGroupChart(respond?.data?.result);
-      setParkingGroupLoading(false);
-    } catch (error) {
-      setParkingGroupLoading(false);
-    }
-  };
-  // progress count up wait till loading
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (Object.keys(VehTotal).length > 0) {
-        setLoading(false);
-      }
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [VehTotal]);
-
-  useEffect(() => {
-    if (myMap && !running) {
-      myMap?.deselectAll();
-      trackStreamLoader();
-      dispatch(updateStRunning());
-    }
-  }, [myMap]);
-
-  useEffect(() => {
-    const htmlTag = document.getElementsByTagName("html")[0];
-    darkMode
-      ? htmlTag.setAttribute("darkMode", true)
-      : htmlTag.setAttribute("darkMode", false);
-  }, [darkMode]);
-
-  useEffect(() => {
-    fetchAllViolationData();
-    fetchParkingGroupsData();
-    const intervalId = setInterval(() => {
-      fetchAllViolationData();
-    }, 2 * 60 * 1000);
-
-    return () => {
-      clearInterval(intervalId);
+  const getRowStyle = () => {
+    return {
+      position: "relative",
+      transform: "translateY(0)",
+      marginBottom: "5px",
+      boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.1)",
     };
-  }, []);
+  };
+
+  // Table Columns
+  const columns = useMemo(
+    () => [
+      {
+        headerName: "Name",
+        field: "username",
+        minWidth: 250,
+      },
+      {
+        headerName: "ID",
+        field: "idNumber", minWidth: 250,
+      },
+      {
+        headerName: "Total Points",
+        field: "totalPoints", minWidth: 250,
+      },
+
+      {
+        headerName: "Student Mobile Number",
+        field: "StudentMobileNumber", minWidth: 250,
+      }, {
+        headerName: "Parent Mobile Number",
+        field: "ParentMobileNumber", minWidth: 250,
+      },
+      {
+        headerName: "Email",
+        field: "email", minWidth: 250,
+      },
+      {
+        headerName: "Millage",
+        field: "millage", minWidth: 250,
+      },
+      {
+        headerName: "Actions",
+        maxWidth: 300,
+        minWidth: 250,
+        cellRenderer: (params) => (
+          <div className="d-flex align-items-center justify-content-start gap-3 mt-1">
+            <button
+              className=" main__button-table"
+              onClick={() => {
+                if (params?.data?._id) {
+                  router.push({
+                    pathname: `/departments/trainee-details/${params.data._id}`,
+                    // query: { custodyId: params.data._id },
+                  });
+                } else {
+                  toast.error("No Trainee Found");
+                }
+              }}
+            >
+              View Statistics
+            </button>
+          </div>
+        ),
+      },
+    ],
+    []
+  );
+
+  const { label, itd, divisonData } = useSelector((state) => state.dashboard);
+
+  const onGridReady = (params) => setGridApi(params.api);
+
+  // This To Control BreadCrumbs
+  useEffect(() => {
+    if (label && !breadcrumbs.includes(label)) {
+      setBreadcrumbs([...breadcrumbs, label]);
+    }
+
+    if (selectedLabel === null && !label) setBreadcrumbs(["Home"]);
+  }, [label, selectedLabel]);
+
+  const [allItd, setAllItd] = useState([]);
+
+  useEffect(() => {
+    let tempITD = [];
+    divisonData.map((item) => {
+      tempITD.push(item.label);
+    });
+    setAllItd(tempITD);
+  }, [label]);
+
+
+  useEffect(() => {
+
+    // const hasLocationReplaced = localStorage.getItem('hasLocationReplaced');
+    if (session.user?.data?.role === "safety-advisor") {
+      dispatch(
+        changeItdItc({
+          itc: session.user?.data?.custodyId,
+          itd: null,
+          label: session.user.data?.custodyName
+        })
+      );
+      router.replace(`/?itc=${session.user?.data?.custodyId}`)
+    }
+
+  }, [session.user?.data?.role]);
+  const resetFilteredDateAndItcLabelHandler = () => {
+    dispatch(setFilteredItcLabel({ label: "All ITD" }))
+    dispatch(resetFilteredData())
+  }
+
   return (
-    <div className="p-3">
-      <Joyride
-        steps={steps}
-        continuous
-        callback={(data) => dispatch(handleJoyrideCallback(data))}
-        run={tourState}
-        showSkipButton
-        beaconComponent={false}
-        locale={{
-          skip: <span className={style["skip-tour"]}>{t("skip_tour")}</span>,
-          back: <span className={style["skip-tour"]}>{t("back")}</span>,
-          next: <span>{t("next")}</span>,
-          last: <span>{t("last")}</span>,
-        }}
-        styles={{
-          options: {
-            primaryColor: "#1e8178",
-            overlayColor: "rgba(0, 0, 0, 0.5)",
-            zIndex: 10000,
-          },
-        }}
+    <div className="px-2 " style={{ background: "#f6f6f6" }} >
+      <DashboardHeader title="Dashboard" setSelectedLabel={setSelectedLabel} selectedLabel={selectedLabel} breadCrumbs={breadcrumbs} setBreadCrumbs={setBreadcrumbs} />
+      {/* Breadcrumb */}
+      {
+        session.user?.data?.role !== "safety-advisor" && <Breadcrumb className="ms-4 fw-bold fs-5 mb-0">
+          {breadcrumbs?.map((bread, i) => (
+            <Breadcrumb.Item
+              key={bread}
+              style={{ fontSize: "15px", visibility: breadcrumbs?.length > 1 ? "visible" : "hidden" }}
+              className="m-0 p-0"
+              active={label === bread}
+              href="#"
+              onClick={() => {
+                setBreadcrumbs(breadcrumbs.slice(0, i + 1));
+                dispatch(clearCustodyDetails());
+
+                if (bread === "Home") {
+                  dispatch(dashboardInfo({}));
+                  dispatch(topDrivers({}));
+                  dispatch(TotalUsers({}));
+                  dispatch(violationsReport({}));
+                  dispatch(weeklyTrendsChart({}));
+                  dispatch(allTrainees({}))
+                  dispatch(cancelledViolations({}))
+
+                  setSelectedLabel(null);
+                  setTrainees(null);
+                  dispatch(changeItdItc({ label: null, itc: "null", itd: null }));
+                  dispatch(dashboardSheets({}))
+
+                  // reset filtered date and itcLabel 
+                  resetFilteredDateAndItcLabelHandler()
+                  localStorage.removeItem("Itd")
+                  router.replace("/");
+                } else if (bread === "All ITD") {
+                  dispatch(setFilteredItcLabel({ label: "All ITD" }))
+                  dispatch(dashboardInfo({}));
+                  dispatch(topDrivers({}));
+                  dispatch(TotalUsers({}));
+                  dispatch(violationsReport({}));
+                  dispatch(weeklyTrendsChart({}));
+                  dispatch(allTrainees({}))
+                  dispatch(cancelledViolations({}))
+                  // dispatch(dashboardSheets({}))
+
+                  dispatch(changeItdItc({ label: bread, itc: "null", itd: null }));
+                  setTrainees(null);
+                  setSelectedLabel(null);
+
+                  // reset filtered date and itcLabel 
+                  resetFilteredDateAndItcLabelHandler()
+                  localStorage.removeItem("Itd")
+                  router.replace("/");
+                } else if (allItd.includes(bread)) {
+                  dispatch(topDrivers({ itd }));
+                  setSelectedLabel(bread);
+                  dispatch(dashboardInfo({ itd }));
+                  dispatch(TotalUsers({ itd }));
+                  dispatch(changeItdItc({ label: bread, itc: "null" }));
+                  dispatch(violationsReport({ itd }));
+                  dispatch(weeklyTrendsChart({ itd }));
+                  dispatch(allTrainees({ itd }))
+                  dispatch(cancelledViolations({ itd }))
+                  setTrainees(null);
+                  // reset filtered date and itcLabel 
+                  resetFilteredDateAndItcLabelHandler()
+                }
+              }}
+            >
+              <button className="bg-transparent breadcrumb-btn" disabled={label === bread}  >
+                {bread}
+              </button>
+            </Breadcrumb.Item>
+          ))}
+        </Breadcrumb>
+      }
+
+      <DashboardTotalNumbers setSelectedLabel={setSelectedLabel} />
+
+      {trainees && !loading ? (
+        <div className="m-4">
+          <h5 className="p-2" style={{ fontSize: "15px" }}>
+            All Trainees
+          </h5>
+
+          <AgGridDT
+            columnDefs={columns}
+            rowData={trainees}
+            onGridReady={onGridReady}
+            paginationPageSize={2}
+            getRowStyle={getRowStyle}
+          />
+        </div>
+      ) : loading ? (
+        <div className="d-flex justify-content-center align-items-center py-3">
+          <Spinner animation="grow" />
+        </div>
+      ) : null}
+
+      <DashboardViolations
+        selectedLabel={selectedLabel}
+        setSelectedLabel={setSelectedLabel}
       />
-
-      <>
-        <Row>
-          {/* ############################  progress bars + Map  ############################################## */}
-
-          <Col lg="6">
-            <Row>
-              <div id="progress-bar">
-                <VehicleProvider>
-                  <Progress loading={loading} />
-                </VehicleProvider>
-              </div>
-            </Row>
-          </Col>
-          {/* map */}
-          <Col lg="6" id="map-section">
-            <Card style={{ height: "calc(100% - 2rem)" }}>
-              <Card.Body className="p-0 position-relative">
-                <Google myMap={myMap} />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-        {/* ############################  Charts  ############################################## */}
-        <Row>
-          {/* charts part one */}
-          <AllViolationsChart
-            data={allViolationChart}
-            loading={allViolationLoading}
-          />
-        </Row>
-        <Row>
-          <VehicleProvider>
-            <VehiclesStatusChart />
-          </VehicleProvider>
-          {/* charts part two */}
-          {/* charts part two */}
-          <AverageUtilizationChart
-            data={averageUtilizationChart}
-            loading={averageUtilizationChartLoading}
-          />
-        </Row>
-        <Row>
-          <ParkingGroupsChart
-            data={parkingGroupChart}
-            loading={parkingGroupLoading}
-          />
-        </Row>
-        <Row>
-          {/* chart part three */}
-
-          <AverageSpeedAndDistanceChart
-            data={speedChartData}
-            loading={speedChartDataLoading}
-          />
-
-          {/* chart part four */}
-          <OverallPreventiveMaintenance
-            data={preventiveChartData?.allMaintenance || []}
-            loading={preventiveChartDataLoading}
-          />
-        </Row>
-        {/* ############################ cards for rates  ############################################## */}
-        <Row>
-          <CardsForRates data={DashboardData} />
-        </Row>
-        {/* ############################ table  ############################################## */}
-        <Row>
-          <NextrepairplansTable
-            data={preventiveChartData?.Upcoming_Maintenance_Plans || []}
-          />
-        </Row>
-      </>
+      <DashboardWeeklyTrends />
     </div>
   );
 };
-
-// translation ##################################
-export async function getServerSideProps(context) {
-  const session = await getSession({ req: context.req });
-  if (session?.user?.user?.role?.toLowerCase() === "user") {
-    return {
-      redirect: {
-        destination: "/track",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      locale: context.locale,
-      ...(await serverSideTranslations(context.locale, [
-        "Dashboard",
-        "main",
-        "Tour",
-      ])),
-    },
-  };
-}
 export default Home;
-
-// translation ##################################

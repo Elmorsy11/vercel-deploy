@@ -564,33 +564,30 @@
       }
 
       var showMarker = function () {
-        if (
-          (layer?._icon || layer?.__parent?._icon) &&
-          !this._inZoomAnimation
-        ) {
+        if ((layer._icon || layer?.__parent?._icon) && !this._inZoomAnimation) {
           this._map.off("moveend", showMarker, this);
           this.off("animationend", showMarker, this);
 
-          if (layer?._icon) {
+          if (layer._icon) {
             callback();
-          } else if (layer?.__parent._icon) {
+          } else if (layer?.__parent?._icon) {
             this.once("spiderfied", callback, this);
-            layer?.__parent.spiderfy();
+            layer.__parent.spiderfy();
           }
         }
       };
 
-      if (layer?._icon && this._map.getBounds().contains(layer?.getLatLng())) {
+      if (layer._icon && this._map.getBounds().contains(layer.getLatLng())) {
         //Layer is visible ond on screen, immediate return
         callback();
-      } else if (layer?.__parent._zoom < Math.round(this._map._zoom)) {
+      } else if (layer.__parent._zoom < Math.round(this._map._zoom)) {
         //Layer should be visible at this zoom level. It must not be on screen so just pan over to it
         this._map.on("moveend", showMarker, this);
-        this._map.panTo(layer?.getLatLng());
+        this._map.panTo(layer.getLatLng());
       } else {
         this._map.on("moveend", showMarker, this);
         this.on("animationend", showMarker, this);
-        layer?.__parent.zoomToBounds();
+        layer.__parent.zoomToBounds();
       }
     },
 

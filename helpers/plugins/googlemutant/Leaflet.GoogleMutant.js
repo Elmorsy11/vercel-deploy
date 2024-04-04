@@ -34,26 +34,26 @@ L.GridLayer.GoogleMutant = L.GridLayer.extend({
     this._GAPIPromise = this._ready
       ? Promise.resolve(window?.google)
       : new Promise(function (resolve, reject) {
-          var checkCounter = 0;
-          var intervalId = null;
-          intervalId = setInterval(function () {
-            if (checkCounter >= 10) {
-              clearInterval(intervalId);
-              return reject(
-                toast.error("window.google not found after 10 attempts")
-              );
-            }
-            if (
-              !!window.google &&
-              !!window.google.maps &&
-              !!window.google.maps.Map
-            ) {
-              clearInterval(intervalId);
-              return resolve(window.google);
-            }
-            checkCounter++;
-          }, 500);
-        });
+        var checkCounter = 0;
+        var intervalId = null;
+        intervalId = setInterval(function () {
+          if (checkCounter >= 10) {
+            clearInterval(intervalId);
+            return reject(
+              toast.error("window.google not found after 10 attempts")
+            );
+          }
+          if (
+            !!window.google &&
+            !!window.google.maps &&
+            !!window.google.maps.Map
+          ) {
+            clearInterval(intervalId);
+            return resolve(window.google);
+          }
+          checkCounter++;
+        }, 500);
+      });
 
     // Couple data structures indexed by tile key
     this._tileCallbacks = {}; // Callbacks for promises for tiles that are expected
@@ -296,6 +296,8 @@ L.GridLayer.GoogleMutant = L.GridLayer.extend({
   _staticRegExp: /StaticMapService\.GetMapImage/,
 
   _onMutatedImage: function _onMutatedImage(imgNode) {
+
+
     var coords;
     var match = imgNode.src.match(this._roadRegexp);
     var sublayer = 0;
@@ -428,9 +430,9 @@ L.GridLayer.GoogleMutant = L.GridLayer.extend({
     // otherwise tiles may be missed if maxNativeZoom is not yet correctly determined
     if (this._mutant) {
       var center = this._map.getCenter();
-      var _center = new google.maps.LatLng(center.lat, center.lng);
+      var _center = new google.maps.LatLng(+center.lat, +center.lng);
 
-      this._mutant.setCenter(_center);
+      _center && this._mutant.setCenter(_center);
       var zoom = this._map.getZoom();
       var fractionalLevel = zoom !== Math.round(zoom);
       var mutantZoom = this._mutant.getZoom();
@@ -464,7 +466,7 @@ L.GridLayer.GoogleMutant = L.GridLayer.extend({
     var center = this._map.getCenter();
     var _center = new google.maps.LatLng(center.lat, center.lng);
 
-    this._mutant.setCenter(_center);
+    _center && this._mutant.setCenter(_center);
     this._mutant.setZoom(Math.round(this._map.getZoom()));
     const gZoom = this._mutant.getZoom();
 
@@ -522,7 +524,7 @@ L.GridLayer.GoogleMutant = L.GridLayer.extend({
       if (key2 in this._freshTiles) {
         var tileBounds = this._map && this._keyToBounds(key);
         var stillVisible =
-          this._map && tileBounds?.overlaps(gMapBounds) && tileZoom == gZoom;
+          this._map && tileBounds.overlaps(gMapBounds) && tileZoom == gZoom;
 
         if (!stillVisible) delete this._freshTiles[key2];
       }

@@ -1,4 +1,5 @@
 import jQuery from "jquery";
+
 (function () {
   L.Control.FullScreen = L.Control.extend({
     options: {

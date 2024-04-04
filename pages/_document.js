@@ -13,13 +13,22 @@ class MyDocument extends Document {
         lang={this.props.locale}
       >
         <Head>
-          <link rel="shortcut icon" href="/favicon.ico" />
+          <link rel="shortcut icon" href="/public/assets/main-logo.svg" />
+          <link
+            href="https://cdn.syncfusion.com/ej2/material.css"
+            rel="stylesheet"
+          ></link>
+          {/* <link
+            href="https://cdn.syncfusion.com/ej2/material-dark.css"
+            rel="stylesheet"
+          ></link> */}
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
             href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap"
             rel="stylesheet"
           />
+
           <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
